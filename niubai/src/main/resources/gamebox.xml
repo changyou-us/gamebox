@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<gamebox>
+    <setting name="siteName" value="GameBox"/>
+    <setting name="siteUrl" value="http://pp.gamebox.com"/>
+    <setting name="logo" value="/upload/image/logo.gif"/>
+    <setting name="hotSearch" value=""/>
+    <setting name="isSiteEnabled" value="true"/>
+    <setting name="siteCloseMessage" value="Temporarily closed"/>
+    <setting name="isDevelopmentEnabled" value="false"/>
+    <setting name="watermarkAlpha" value="50"/>
+    <setting name="watermarkImage" value="/upload/image/watermark.png"/>
+    <setting name="watermarkPosition" value="bottomRight"/>
+    <setting name="isRegisterEnabled" value="true"/>
+    <setting name="isDuplicateEmail" value="false"/>
+    <setting name="disabledUsername" value="admin,管理员"/>
+    <setting name="usernameMinLength" value="2"/>
+    <setting name="usernameMaxLength" value="32"/>
+    <setting name="passwordMinLength" value="4"/>
+    <setting name="passwordMaxLength" value="20"/>
+    <setting name="priceScale" value="2"/>
+    <setting name="priceRoundType" value="roundHalfUp"/>
+    <setting name="isEmailLogin" value="true"/>
+    <setting name="captchaTypes" value="memberLogin,memberRegister,adminLogin,review,consultation,findPassword,resetPassword,other"/>
+    <setting name="accountLockTypes" value="admin"/>
+    <setting name="accountLockCount" value="5"/>
+    <setting name="accountLockTime" value="10"/>
+    <setting name="safeKeyExpiryTime" value="1440"/>
+    <setting name="uploadMaxSize" value="10"/>
+    <setting name="uploadImageExtension" value="jpg,jpeg,bmp,gif,png"/>
+    <setting name="uploadFlashExtension" value="swf,flv"/>
+    <setting name="uploadMediaExtension" value="swf,flv,mp3,wav,avi,rm,rmvb"/>
+    <setting name="uploadFileExtension" value="zip,rar,7z,doc,docx,xls,xlsx,ppt,pptx"/>
+    <setting name="imageUploadPath" value="/upload/image/${.now?string('yyyyMM')}/"/>
+    <setting name="flashUploadPath" value="/upload/flash/${.now?string('yyyyMM')}/"/>
+    <setting name="mediaUploadPath" value="/upload/media/${.now?string('yyyyMM')}/"/>
+    <setting name="fileUploadPath" value="/upload/file/${.now?string('yyyyMM')}/"/>
+    <setting name="smtpFromMail" value="test@gamebox.com"/>
+    <setting name="smtpHost" value="smtp.gamebox.com"/>
+    <setting name="smtpPort" value="25"/>
+    <setting name="smtpUsername" value="test"/>
+    <setting name="smtpPassword" value="test"/>
+    <setting name="currencySign" value="$"/>
+    <setting name="currencyUnit" value="USD"/>
+    <setting name="cookiePath" value="/"/>
+    <setting name="cookieDomain" value=".gamebox.com"/>
+    <setting name="cookieAge" value="86400"/>
+    <logConfig operation="系统设置" urlPattern="/admin/setting/update.jhtml"/>
+    <logConfig operation="添加管理员" urlPattern="/admin/admin/save.jhtml"/>
+    <logConfig operation="编辑管理员" urlPattern="/admin/admin/update.jhtml"/>
+    <logConfig operation="删除管理员" urlPattern="/admin/admin/delete.jhtml"/>
+    <logConfig operation="添加新闻" urlPattern="/admin/article/save.jhtml"/>
+    <logConfig operation="编辑新闻" urlPattern="/admin/article/update.jhtml"/>
+    <logConfig operation="删除新闻" urlPattern="/admin/article/delete.jhtml"/>
+    <logConfig operation="添加游戏" urlPattern="/admin/game/save.jhtml"/>
+    <logConfig operation="删除游戏" urlPattern="/admin/article/delete.jhtml"/>
+    <logConfig operation="编辑游戏" urlPattern="/admin/article/update.jhtml"/>
+    <logConfig operation="添加服务器" urlPattern="/admin/game_server/save.jhtml"/>
+    <logConfig operation="删除服务器" urlPattern="/admin/game_server/delete.jhtml"/>
+    <logConfig operation="编辑服务器" urlPattern="/admin/game_server/update.jhtml"/>
+    <pixelLog name="logRccid" path="/logs/${createDate?string('yyyyMMdd')}_rccid.log"/>
+    <pixelLog name="logRccidAndSubid" path="/logs/${createDate?string('yyyyMMdd')}_rccid.log"/>
+    <pixelLog name="logGclid" path="/logs/${createDate?string('yyyyMMdd')}_google.log"/>
+    <template id="webgameCommonJs" type="page" name="webgame_common_js" templatePath="/webgame/js/common.ftl" staticPath="/resources/webgame/js/common.js"/>
+    <template id="adminCommonJs" type="page" name="admin_common_js" templatePath="/admin/js/common.ftl" staticPath="/resources/admin/js/common.js"/>
+    <template id="sitemapIndex" type="page" name="sitemap索引" templatePath="/webgame/xml/sitemap_index.ftl" staticPath="/sitemap/index.xml"/>
+    <template id="sitemap" type="page" name="sitemap" templatePath="/webgame/xml/sitemap.ftl" staticPath="/sitemap/${index}.xml"/>
+    <template id="index" type="page" name="首页" templatePath="/webgame/index.ftl" staticPath="/index.html"/>
+    <template id="gameList" type="page" name="首页-游戏列表" templatePath="/webgame/games/gameList.ftl" staticPath="/game_list.html"/>
+    <template id="gameHome" type="page" name="游戏-通用首页" templatePath="/webgame/games/gameHome.ftl" staticPath="/games/${identifier}/game_home.html" />
+    <template id="articleContent" type="page" name="文章内容" templatePath="/webgame/article/${gameId}/content.ftl" staticPath="/buzz/${articleCategory.name?replace(' ','-')}/${createDate?string('yyyyMM')}/${id}/${pageNumber!1}.html"/>
+    <template id="articleList" type="page" name="文章列表" templatePath="/webgame/article/list.ftl"/>
+    <template id="friendLink" type="page" name="友情链接" templatePath="/webgame/friend_link/index.ftl"/>
+    <template id="testMail" type="mail" name="邮件测试" templatePath="/admin/setting/mail.ftl"/>
+    <template id="findPasswordMail" type="mail" name="找回密码" templatePath="/webgame/password/mail.ftl"/>
+    <template id="findActivateEmail" type="mail" name="激活邮箱" templatePath="/webgame/account/mail.ftl"/>
+    <template id="serverContent" type="page" name="游戏服务器列表" templatePath="/webgame/servers/${identifier}/server.ftl" staticPath="/servers/${identifier}/server.html"/>
+    <template id="serverfbContent" type="page" name="facebook游戏服务器列表" templatePath="/webgame/serversfb/${identifier}/server.ftl" staticPath="/serversfb/${identifier}/server.html"/>
+    <template id="googleTrackingPixel" type="page" name="google广告" templatePath="/webgame/marketing/common/tracking_pixel.ftl" staticPath="/webgame/marketing/google/${gclid}.html"/>
+    <template id="trackingPixel" type="page" name="网盟广告" templatePath="/webgame/marketing/common/tracking_pixel.ftl" staticPath="/webgame/marketing/common/${rccid}.html"/>
+    <template id="faqContent" type="page" name="Faq内容" templatePath="/webgame/support/faq/content.ftl" staticPath="/faq/content/${createDate?string('yyyyMM')}/${id}.html"/>
+    <setting name="isNotify" value="true"/>
+    <setting name="connectTimeout" value="30000"></setting>
+    <setting name="readTimeout" value="30000"></setting>
+    <thirdSystem id="askUs" class="com.gamebox.sso.action.impl.AskUsSSONotifyAction">
+        <type action="registerUrl" url="http:// staging.community.gamebox.com/?/account/gamebox/gamebox_register/"/>
+        <type action="loginUrl" url="http:// staging.community.gamebox.com/?/account/gamebox/gamebox_login/"/>
+        <type action="resetPasswordUrl" url="http:// staging.community.gamebox.com/?/account/gamebox/gamebox_change_password/"/>
+        <type action="setNicknameUrl" url="http:// staging.community.gamebox.com/?/account/gamebox/gamebox_update_user_name/"/>
+        <type action="setBlackListUrl" url="http:// staging.community.gamebox.com/?/account/gamebox/gamebox_forbidden_user/"/>
+    </thirdSystem>
+    <setting name="avatarPath" value="/upload/image/avatar"/>
+    <setting name="defaultAvatar" value="/upload/image/avatar/default_avatar.GIF"/>
+    <setting name="avatarMaxSize" value="3145728  "/>
+    <setting name="ticketAttachmentPath" value="/upload/ticket/attachment/${createDate?string('yyyyMM')}/${uuid}"/>
+    <setting name="tempFilePath" value="/upload/temp"/>
+</gamebox>
