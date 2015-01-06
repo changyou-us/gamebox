@@ -8,7 +8,7 @@ import com.gamebox.model.Webgame;
 /**
  * Dao - 管理员
  * 
- * @author Dick Niu
+ * @author 
  * @version 1.0
  */
 public interface GameDao{
