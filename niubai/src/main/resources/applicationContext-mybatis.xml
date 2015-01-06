@@ -142,7 +142,7 @@
         <property name="memcachedClient" ref="memcachedClient" />  
         <property name="configMap">  
             <map>  
-                <!-- key：@Cacheable、@CachePut、@CacheEvict等的name属性。value：缓存过期时间(单位：秒)，默认值：0 -->  
+                <!-- key：@Cacheable、@CachePut、@CacheEvict等的name属性。value：缓存过期时间(单位：秒)，默认值：00 -->  
                 <entry key="test" value="3600" />
             </map>  
         </property>  
