@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gamebox.dao.UsersDao" >
+
+  
+  <insert id="insert" parameterType="com.gamebox.model.Users" >
+    insert into gamebox_users (email, password
+      )
+    values (#{email,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  <select id="selectAll" resultType="hashmap">
+  	select * from gamebox_users
+  </select>
+  
+  <select id="selectTest" resultType="hashmap">
+  	select * from gamebox_users
+  </select>
+  
+</mapper>
