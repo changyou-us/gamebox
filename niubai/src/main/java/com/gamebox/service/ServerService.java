@@ -3,6 +3,7 @@ package com.gamebox.service;
 import java.util.List;
 import java.util.Map;
 
+import com.gamebox.model.DirectPaymentOrder;
 import com.gamebox.model.Server;
 import com.gamebox.model.Server.DisplayType;
 import com.gamebox.model.Users;
@@ -135,8 +136,6 @@ public interface ServerService {
     public int updateStatus(Long[] ids, Integer status);
 
     int gamesCharge(DirectPaymentOrder directPaymentOrder);
-
-    int gamesCharge(TokenExchangeOrder tokenExchangeOrder);
 
     /**
      * 根据游戏获取服务器

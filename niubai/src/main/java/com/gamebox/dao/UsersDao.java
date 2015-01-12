@@ -12,9 +12,7 @@ import com.gamebox.model.Users;
  * @author wuji
  * 
  */
-public interface UsersDao {
+public interface UsersDao extends BaseDao<Users>{
 
-    void insert(Users users);
-    
-    List<Users> selectAll();
+    Users findUserById(String uid);
 }

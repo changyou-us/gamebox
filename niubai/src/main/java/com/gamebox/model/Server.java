@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.gamebox.util.FreemarkerUtils;
 
 import freemarker.template.TemplateException;
 
@@ -586,25 +585,5 @@ public class Server extends BaseEntity implements java.io.Serializable {
         this.rankKey = rankKey;
     }
 
-    /**
-     * 获取访问路径
-     * 
-     * @return 访问路径
-     */
-    public String getPath() {
-
-        Map<String, Object> model = new HashMap<String, Object>();
-        model.put("gid", getGameId());
-        try {
-            return FreemarkerUtils.process(staticPath, model);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        catch (TemplateException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
 }

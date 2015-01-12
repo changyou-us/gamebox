@@ -1,8 +1,6 @@
 package com.gamebox.controller;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gamebox.model.TcpTest;
+import com.gamebox.model.Users;
 import com.gamebox.service.TcpTestService;
+import com.gamebox.service.UsersService;
 
 @Controller(value = "testController")
 @RequestMapping(value = "/test")
@@ -22,6 +22,9 @@ public class TestController {
 
     @Resource(name = "testService")
     private TcpTestService testService;
+    
+    @Resource(name = "usersServiceImpl")
+    private UsersService usersService;
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     @ResponseBody
@@ -37,6 +40,17 @@ public class TestController {
 
         testService.updateById(test);
         return "OK";
+    }
+    
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Users> users(HttpServletRequest request, ModelMap model) {
+
+        List<Users> list = usersService.queryAll();
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println(list.get(i).getUserId());
+        }
+        return list;
     }
 
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gamebox.dao.GameDao;
+import com.gamebox.dao.ServerDao;
 import com.gamebox.model.Users;
 import com.gamebox.model.Webgame;
 import com.gamebox.model.Webgame.OpenStatusType;
@@ -46,9 +47,6 @@ public class GameServiceImpl implements GameService {
     @Resource(name = "serverDaoImpl")
     private ServerDao serverDao;
 
-    @Resource(name = "templateServiceImpl")
-    private TemplateService templateService;
-
     @Transactional(readOnly = true)
     public Webgame findByGameId(Integer gameId) {
 
@@ -76,16 +74,7 @@ public class GameServiceImpl implements GameService {
     @Transactional(readOnly = true)
     public List<Webgame> getGames(OpenStatusType... openStatus) {
 
-        Order order = new Order("id", Direction.asc);
-        List<Order> orders = new ArrayList<Order>();
-        orders.add(order);
-        if (openStatus.length > 0 && openStatus[0] == OpenStatusType.able) {
-            Filter filter = new Filter("openStatus", Operator.eq, 1);
-            List<Filter> filters = new ArrayList<Filter>();
-            filters.add(filter);
-            return findList(null, filters, orders);
-        }
-        return findList(null, null, orders);
+        return null;
     }
 
     @Transactional(readOnly = true)
@@ -126,15 +115,7 @@ public class GameServiceImpl implements GameService {
     @Transactional(readOnly = true)
     public List<Webgame> getPermittedGames() {
 
-        List<Webgame> permittedGames = new ArrayList<Webgame>();
-        Subject currentAdmin = SecurityUtils.getSubject();
-        List<Webgame> webgames = this.findAll();
-        for (Webgame g : webgames) {
-            if (currentAdmin.isPermitted("admin:game_" + g.getGameId())) {
-                permittedGames.add(g);
-            }
-        }
-        return permittedGames;
+        return null;
     }
 
     public String buildRankUrl(Integer gameId, String serverId) {
@@ -157,23 +138,5 @@ public class GameServiceImpl implements GameService {
         return url;
     }
 
-    public String getStaticLink(String name) {
-
-        Template template = templateService.get("gameIndex");
-        Map<String, Object> tModel = new HashMap<String, Object>();
-        tModel.put("name", name);
-        try {
-            return FreemarkerUtils.process(template.getStaticPath(), tModel);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        catch (TemplateException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-    }
 
 }

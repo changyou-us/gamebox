@@ -20,16 +20,21 @@ import java.util.TreeMap;
 
 import javax.annotation.Resource;
 
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
+import com.gamebox.dao.DirectPaymentOrderDao;
+import com.gamebox.dao.GamePaymentTypePriceDao;
 import com.gamebox.dao.ServerDao;
+import com.gamebox.dao.UsersDao;
+import com.gamebox.model.DirectPaymentOrder;
+import com.gamebox.model.GamePaymentTypePrice;
+import com.gamebox.model.OrderStatus;
 import com.gamebox.model.Server;
 import com.gamebox.model.Server.DisplayType;
 import com.gamebox.model.Server.IsNewType;
@@ -105,29 +110,14 @@ public class ServerServiceImpl  implements ServerService {
     @Resource(name = "serverDaoImpl")
     private ServerDao serverDao;
 
-    @Resource(name = "staticServiceImpl")
-    private StaticService staticService;
-
     @Resource(name = "gameServiceImpl")
     private GameService gameService;
 
     @Resource(name = "usersDao")
     private UsersDao usersDao;
 
-    @Resource(name = "userPlayInfoDaoImpl")
-    private UserPlayInfoDao userPlayInfoDao;
-
     @Resource(name = "gamePaymentTypePriceDaoImpl")
     private GamePaymentTypePriceDao gamePaymentTypePriceDao;
-
-    @Resource(name = "gameTokenPriceDaoImpl")
-    private GameTokenPriceDao gameTokenPriceDao;
-
-    @Resource(name = "paymentTypeServiceImpl")
-    protected PaymentTypeService paymentTypeService;
-
-    @Resource(name = "tokenExchangeOrderDaoImpl")
-    private TokenExchangeOrderDao tokenExchangeOrderDao;
 
 
     @Transactional(readOnly = true)
@@ -195,17 +185,11 @@ public class ServerServiceImpl  implements ServerService {
     @CacheEvict(value = { "server" }, allEntries = true)
     public Server update(Server server) {
 
-        Server result = super.update(server);
+        int result = serverDao.update(server);
         // staticService.build(serverDao.findByGameId(server.getGameId(), false), server.getGameId());
-        return result;
+        return server;
     }
 
-    @Transactional
-    @CacheEvict(value = { "server" }, allEntries = true)
-    public void delete(Long... ids) {
-
-        super.delete(ids);
-    }
 
     @Transactional(readOnly = true)
     public Server findServerByGidAndSid(Integer gid, Integer sid) {
@@ -374,7 +358,7 @@ public class ServerServiceImpl  implements ServerService {
         // String sid = serverId.toString();
         // Server server = serverService.findServerByGidAndSid(gameId, serverId);
         String amount = String.valueOf(directPaymentOrder.getConvertAmount());
-        String paymentName = paymentTypeService.findByTypeId(paymentTypeId).getTypeName();
+        String paymentName = "facebook";
         String currency = directPaymentOrder.getCurrency();
         GamePaymentTypePrice gamePaymentTypePrice = null;
         if (gameId == 19) {
@@ -397,36 +381,6 @@ public class ServerServiceImpl  implements ServerService {
 
     }
 
-    @Override
-    public int gamesCharge(TokenExchangeOrder tokenExchangeOrder) {
-
-        if (tokenExchangeOrder.getStatus().equals(OrderStatus.COMPLETED)) {
-            return 1;
-        }
-        Integer gameId = tokenExchangeOrder.getGameId();
-        Integer serverId = tokenExchangeOrder.getServerId();
-        // String sid = serverId.toString();
-        // Server server = serverService.findServerByGidAndSid(gameId, serverId);
-        BigDecimal bigDecimal = new BigDecimal(tokenExchangeOrder.getTokenAmount());
-
-        String amount = bigDecimal.divide(new BigDecimal(100)).toString();
-        String paymentName = "Gtokens";
-        GameTokenPrice gameTokenPrice = gameTokenPriceDao.findByGameIdAndTokenAmount(gameId,
-                tokenExchangeOrder.getTokenAmount());
-
-        Integer gameCoin = gameTokenPrice.getGameCoin();
-        Integer coinBonus = gameTokenPrice.getCoinBonus();
-        Integer gameCoins = gameCoin + coinBonus;
-        String ordersn = tokenExchangeOrder.getOrderSn();
-        String roleId = tokenExchangeOrder.getRoleId();
-        String roleName = tokenExchangeOrder.getGameRole();
-        String description = tokenExchangeOrder.getDescription();
-        tokenExchangeOrder.setGameCoin(gameCoins);
-        tokenExchangeOrderDao.persist(tokenExchangeOrder);
-        return this.recharge(gameId, serverId, tokenExchangeOrder.getUserId(), amount, ordersn, roleId, roleName,
-                gameCoins, gameCoin, coinBonus, paymentName, "USD", true, description);
-
-    }
 
     @Override
     public int recharge(Integer gameId, Integer serverId, Integer userId, String amount, String ordersn, String roleId,
@@ -561,7 +515,7 @@ public class ServerServiceImpl  implements ServerService {
         System.out.println(expectResult);
         if (expectResult.equals(responseStr.trim())) {
             if (gameId == 4) {
-                oqRewards(serverId, userId, uid, roleName, gameCoin);
+                //oqRewards(serverId, userId, uid, roleName, gameCoin);
             }
             return 1;
         }
@@ -575,151 +529,7 @@ public class ServerServiceImpl  implements ServerService {
         return serverDao.updateStatus(ids, status);
     }
 
-    private void oqRewards(Integer serverId, Integer userId, String uid, String roleName, Integer gameCoin) {
-        try {
-        int leaf = gameCoin;
-
-        String sendtitle = "Event Rewards";
-
-        String body = "Dear Player,Thanks so much for your support. Here are the recharge rewards. Please click to receive them. Have a nice day!Gamebox Team";
-
-        String sDateTime = DateUtils.getCurrentDay("yyyy-MM-dd");
-
-        String timestamp = DateUtils.getCurrentTime().toString();
-        //
-        String secret = DigestUtils.md5Hex(sDateTime + timestamp + "@#dj%sdgamecibboxu#m");
-
-        if (serverId > 300 && serverId < 400) {
-            secret = DigestUtils.md5Hex(sDateTime + timestamp + "@box%sduutcgameome#c");
-        }
-
-        String urlOfRole = "http://oqs" + serverId
-                + ".gamebox.com/hoho_admin/interface/export/interface.php?method=characters&user_id=" + uid + "&date="
-                + sDateTime + "&time=" + timestamp + "&flag=" + secret;
-        // 时区服
-        if (serverId > 200 && serverId < 300) {
-            urlOfRole = "http://edtoqs" + (serverId - 200)
-                    + ".gamebox.com/hoho_admin/interface/export/interface.php?method=characters&user_id=" + uid
-                    + "&date=" + sDateTime + "&time=" + timestamp + "&flag=" + secret;
-        }
-        if (serverId > 300 && serverId < 400) {
-            urlOfRole = "http://utcoqs" + (serverId - 300)
-                    + ".gamebox.com/hoho_admin/interface/export/interface.php?method=characters&user_id=" + uid
-                    + "&date=" + sDateTime + "&time=" + timestamp + "&flag=" + secret;
-        }
-
-        String rescc = WebUtils.sendGet(urlOfRole, null);
-
-        JSONArray jsonArray = JSONArray.fromObject(rescc);
-
-        String guid = "";
-
-        for (int i = 0; i < jsonArray.size(); i++) {
-
-            JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-            String nickname = jsonObject.getString("nickname");
-            if (nickname.equalsIgnoreCase(roleName)) {
-                guid = jsonObject.getString("Guid");
-                System.out.println("=======pay Guid=======" + guid);
-            }
-        }
-
-        if (guid.equals("")) {
-            return;
-        }
-        List<DirectPaymentOrder> list = directPaymentOrderDao.oqRewardsOnCurrentDay(userId);
-        String urlOfTool = "";
-        String wupin = "";
-        if (list.size() < 1) {
-            try {
-
-                wupin = "50700080:1:1,11010004:1:1,11000004:1:1";
-
-                urlOfTool = "http://oqs" + serverId
-                        + ".gamebox.com/hoho_admin/interface/export/interface.php?method=send_classic&date="
-                        + sDateTime + "&time=" + timestamp + "&flag=" + secret + "&userid=" + guid + "&sendtitle="
-                        + URLEncoder.encode(sendtitle, "UTF-8") + "&body=" + URLEncoder.encode(body, "UTF-8")
-                        + "&wupin=" + wupin;
-                if (serverId > 200 && serverId < 300) {
-                    urlOfTool = "http://edtoqs" + (serverId - 200)
-                            + ".gamebox.com/hoho_admin/interface/export/interface.php?method=send_classic&date="
-                            + sDateTime + "&time=" + timestamp + "&flag=" + secret + "&userid=" + guid + "&sendtitle="
-                            + URLEncoder.encode(sendtitle, "UTF-8") + "&body=" + URLEncoder.encode(body, "UTF-8")
-                            + "&wupin=" + wupin;
-                }
-                if (serverId > 300 && serverId < 400) {
-                    urlOfTool = "http://edtoqs" + (serverId - 300)
-                            + ".gamebox.com/hoho_admin/interface/export/interface.php?method=send_classic&date="
-                            + sDateTime + "&time=" + timestamp + "&flag=" + secret + "&userid=" + guid + "&sendtitle="
-                            + URLEncoder.encode(sendtitle, "UTF-8") + "&body=" + URLEncoder.encode(body, "UTF-8")
-                            + "&wupin=" + wupin;
-                }
-                WebUtils.sendGet(urlOfTool, null);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-        System.out.println(leaf);
-
-        if (leaf == 200) {
-            wupin = "21301005:1:1,50200024:1:1";
-        }
-        else if (leaf == 400) {
-            wupin = "10500003:1:1,50700063:3:1,11010004:2:1";
-        }
-        else if (leaf == 600) {
-            wupin = "50700063:3:1,10100053:10:1,10100032:2:1,10100047:1:1,50700080:2:1";
-        }
-        else if (leaf == 1200) {
-            wupin = "50700070:1:1,10100053:18:1,10100032:7:1,10100048:1:1,50700080:4:1";
-        }
-        else if (leaf == 1800 || leaf == 2000) {
-            wupin = "50700001:8:1,50700070:2:1,10100053:27:1,10100049:1:1,50700080:6:1";
-        }
-        else if (leaf == 4000) {
-            wupin = "11000006:1:1,11010007:2:1,10100054:15:1,10100055:10:1,10100049:1:1,50700080:15:1";
-        }
-        else if (leaf == 6000) {
-            wupin = "11000006:2:1,11010007:4:1,10100054:25:1,10600062:2:1,50700003:30:1,50700080:20:1";
-        }
-        else if (leaf == 10000) {
-            wupin = "11000006:4:1,11010007:7:1,10100054:40:1,10600062:5:1,50700003:50:1,50700080:40:1";
-        }
-        else if (leaf == 20000) {
-            wupin = "11000007:3:1,11010009:1:1,10100007:5:1,10100055:99:1,50700080:99:1,10600062:10:1";
-        }
-        else {
-            return;
-        }
-       
-            urlOfTool = "http://oqs" + serverId
-                    + ".gamebox.com/hoho_admin/interface/export/interface.php?method=send_classic&date=" + sDateTime
-                    + "&time=" + timestamp + "&flag=" + secret + "&userid=" + guid + "&sendtitle="
-                    + URLEncoder.encode(sendtitle, "UTF-8") + "&body=" + URLEncoder.encode(body, "UTF-8") + "&wupin="
-                    + wupin;
-            if (serverId > 200 && serverId < 300) {
-                urlOfTool = "http://edtoqs" + serverId
-                        + ".gamebox.com/hoho_admin/interface/export/interface.php?method=send_classic&date="
-                        + sDateTime + "&time=" + timestamp + "&flag=" + secret + "&userid=" + guid + "&sendtitle="
-                        + URLEncoder.encode(sendtitle, "UTF-8") + "&body=" + URLEncoder.encode(body, "UTF-8")
-                        + "&wupin=" + wupin;
-            }
-            if (serverId > 300 && serverId < 400) {
-                urlOfTool = "http://edtoqs" + serverId
-                        + ".gamebox.com/hoho_admin/interface/export/interface.php?method=send_classic&date="
-                        + sDateTime + "&time=" + timestamp + "&flag=" + secret + "&userid=" + guid + "&sendtitle="
-                        + URLEncoder.encode(sendtitle, "UTF-8") + "&body=" + URLEncoder.encode(body, "UTF-8")
-                        + "&wupin=" + wupin;
-            }
-            WebUtils.sendGet(urlOfTool, null);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
+    
 
     /*
      * (non-Javadoc)

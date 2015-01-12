@@ -95,12 +95,4 @@ public interface GameService{
      */
     public List<Webgame> getPermittedGames();
 
-    /**
-     * 获取游戏主页地址
-     * 
-     * @param name
-     *            游戏名称
-     * @return gameHome url
-     */
-    public String getStaticLink(String name);
 }
