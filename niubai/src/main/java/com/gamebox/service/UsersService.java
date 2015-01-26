@@ -1,13 +1,12 @@
 package com.gamebox.service;
 
-import java.util.List;
-
 import com.gamebox.model.Users;
-
 
 public interface UsersService {
     
     public void save(Users users);
+    
+    Users findUserByUserId(String userId);
 
-    public List<Users> queryAll();
+    Users findUserByEmail(String email);
 }

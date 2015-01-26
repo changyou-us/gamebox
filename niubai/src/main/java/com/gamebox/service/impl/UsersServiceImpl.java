@@ -1,7 +1,5 @@
 package com.gamebox.service.impl;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,39 +9,31 @@ import com.gamebox.service.UsersService;
 
 @Service("usersServiceImpl")
 public class UsersServiceImpl implements UsersService{
-
-    private UsersDao usersDao;
     
-    
-    /**
-     * @return the usersDao
-     */
-    public UsersDao getUsersDao() {
-    
-        return usersDao;
-    }
-
-    
-    /**
-     * @param usersDao the usersDao to set
-     */
     @Autowired
-    public void setUsersDao(UsersDao usersDao) {
-    
-        this.usersDao = usersDao;
-    }
+    //@Resource(name="userMapper")
+    private UsersDao usersDao;
 
     @Override
     public void save(Users users) {
 
-        usersDao.insert(users);
+        
+        System.out.println(usersDao.insert(users));
+        System.out.println(users.getUserId());
     }
 
 
     @Override
-    public List<Users> queryAll() {
+    public Users findUserByUserId(String userId) {
 
-        return usersDao.selectAll();
+        return usersDao.findUserByUserId(userId);
+    }
+
+
+    @Override
+    public Users findUserByEmail(String email) {
+
+        return usersDao.findUserByEmail(email);
     }
 
     

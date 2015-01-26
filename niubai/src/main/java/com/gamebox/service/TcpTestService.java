@@ -4,7 +4,6 @@
  */
 package com.gamebox.service;
 
-import java.util.Date;
 import java.util.List;
 
 import com.gamebox.model.TcpTest;

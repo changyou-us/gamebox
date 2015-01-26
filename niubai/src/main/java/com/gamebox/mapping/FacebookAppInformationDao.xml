@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gamebox.dao.FacebookAppInformationDao">
+  
+  
+  <resultMap id="facebookAppInformationMap" type="com.gamebox.model.FacebookAppInformation" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+    <result column="app_secret" property="appSecret" jdbcType="VARCHAR" />
+    <result column="app_token" property="appToken" jdbcType="VARCHAR" />
+    <result column="game_id" property="gameId" jdbcType="VARCHAR" />
+    <result column="game_name" property="gameName" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="modify_date" property="modifyDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <select id="findByGameId" resultMap="facebookAppInformationMap" parameterType="java.lang.Integer">
+  	select * from gamebox_facebook_app_information
+  	where game_id = #{gameId,jdbcType=INTEGER} 
+  </select>
+  
+  <select id="findByGameName" resultMap="facebookAppInformationMap" parameterType="java.lang.String">
+  	select * from gamebox_facebook_app_information
+  	where game_name = #{gameName,jdbcType=VARCHAR}
+  </select>
+  
+</mapper>

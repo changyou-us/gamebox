@@ -1,21 +1,10 @@
 package com.gamebox.model;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import freemarker.template.TemplateException;
 
 /**
  * GameboxServer entity. @author MyEclipse Persistence Tools
  */
-@JsonAutoDetect(getterVisibility = Visibility.ANY)
-@JsonIgnoreProperties(value = { "id", "createDate", "modifyDate", "path", "description" })
 public class Server extends BaseEntity implements java.io.Serializable {
 
     /**
@@ -88,7 +77,7 @@ public class Server extends BaseEntity implements java.io.Serializable {
     }
 
     /** 静态路径 */
-    private static String staticPath;
+    //private static String staticPath;
 
     /**
      * 服务id，服务器唯一标识

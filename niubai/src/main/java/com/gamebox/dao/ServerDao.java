@@ -3,7 +3,6 @@ package com.gamebox.dao;
 import java.util.List;
 
 import com.gamebox.model.Server;
-import com.gamebox.model.Users;
 import com.gamebox.model.Server.DisplayType;
 import com.gamebox.model.Server.IsNewType;
 import com.gamebox.model.Server.RecommendedType;
@@ -16,7 +15,7 @@ import com.gamebox.model.Webgame.OpenStatusType;
  * @author Dick Niu
  * @version 1.0
  */
-public interface ServerDao extends BaseDao<Server>{
+public interface ServerDao {
     
 
     /**

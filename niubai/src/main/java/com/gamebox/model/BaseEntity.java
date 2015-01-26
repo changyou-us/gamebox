@@ -60,7 +60,7 @@ public abstract class BaseEntity implements Serializable {
     }
 
     /** ID */
-    private Long id;
+    private Integer id;
 
     /** 创建日期 */
     private Date createDate;
@@ -74,7 +74,7 @@ public abstract class BaseEntity implements Serializable {
      * @return ID
      */
     @JsonProperty
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -84,7 +84,7 @@ public abstract class BaseEntity implements Serializable {
      * @param id
      *            ID
      */
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

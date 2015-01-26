@@ -1,5 +1,6 @@
 package com.gamebox.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -11,27 +12,38 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.gamebox.model.GamePaymentTypePrice;
 import com.gamebox.model.TcpTest;
-import com.gamebox.model.Users;
+import com.gamebox.service.GamePaymentTypePriceService;
 import com.gamebox.service.TcpTestService;
 import com.gamebox.service.UsersService;
 
-@Controller(value = "testController")
+@Controller
 @RequestMapping(value = "/test")
 public class TestController {
 
-    @Resource(name = "testService")
+    //@Resource(name = "testService")
     private TcpTestService testService;
     
     @Resource(name = "usersServiceImpl")
     private UsersService usersService;
+    
+    @Resource(name = "gamePaymentTypePriceServiceImpl")
+    private GamePaymentTypePriceService gamePaymentTypePriceService;
 
+    @RequestMapping(value = "/baidu", method = RequestMethod.GET)
+    public String baidu(HttpServletRequest request, ModelMap model) {
+        
+        return "/auth_fb";
+    }
+    
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     @ResponseBody
     public List<TcpTest> getAll(HttpServletRequest request, ModelMap model) {
 
-        List<TcpTest> list = testService.getAll();
-        return list;
+        System.out.println(123456);
+        //List<TcpTest> list = testService.getAll();
+        return null;
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.GET)
@@ -42,15 +54,68 @@ public class TestController {
         return "OK";
     }
     
-    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    @RequestMapping(value = "/save", method = RequestMethod.GET)
     @ResponseBody
-    public List<Users> users(HttpServletRequest request, ModelMap model) {
+    public int save(HttpServletRequest request, ModelMap model) {
 
-        List<Users> list = usersService.queryAll();
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.get(i).getUserId());
-        }
-        return list;
+        Integer gameId = 1;
+        Integer paymentTypeId = 1;
+        List<GamePaymentTypePrice> findByGameIdAndPaymentTypeId = gamePaymentTypePriceService.findByGameIdAndPaymentTypeId(gameId, paymentTypeId);
+        System.out.println(findByGameIdAndPaymentTypeId.size());
+        String currency = "USD";
+        BigDecimal amount = new BigDecimal(5);
+        GamePaymentTypePrice findByGameIdCurrencyAndAmount = gamePaymentTypePriceService.findByGameIdPaymentTypeIdCurrencyAndAmount(gameId, paymentTypeId, currency, amount);
+        String description = "abc";
+        System.out.println(findByGameIdCurrencyAndAmount.getAmount());
+        GamePaymentTypePrice findByGameIdCurrencyAndAmount2 = gamePaymentTypePriceService.findByGameIdPaymentTypeIdCurrencyAmountAndDescription(gameId, paymentTypeId, currency, amount, description);
+        System.out.println(findByGameIdCurrencyAndAmount2.getAmount());
+        /*
+        Users users = new Users();
+        String email = OrderUtils.getOrderSn();
+        System.out.println(email);
+        users.setEmail(email);
+        usersService.save(users);
+        
+        Users find1 = usersService.findUserByUserId(users.getUserId().toString());
+        System.out.println(find1.getEmail());
+        Users find2 = usersService.findUserByEmail(users.getEmail());
+        System.out.println(find1 == find2);
+        System.out.println(find2.getUserId());
+        
+        
+        Integer gameId = 14;
+        Integer paymentTypeId = 1;
+        List<GamePaymentTypePrice> findByGameIdAndPaymentTypeId = gamePaymentTypePriceService.findByGameIdAndPaymentTypeId(gameId, paymentTypeId);
+        System.out.println(findByGameIdAndPaymentTypeId.size());
+        String currency = "USD";
+        BigDecimal amount = new BigDecimal(5);
+        GamePaymentTypePrice findByGameIdCurrencyAndAmount = gamePaymentTypePriceService.findByGameIdCurrencyAndAmount(gameId, paymentTypeId, currency, amount);
+        String description = "abc";
+        System.out.println(findByGameIdCurrencyAndAmount.getAmount());
+        GamePaymentTypePrice findByGameIdCurrencyAndAmount2 = gamePaymentTypePriceService.findByGameIdCurrencyAndAmount(gameId, paymentTypeId, currency, amount, description);
+        System.out.println(findByGameIdCurrencyAndAmount2.getAmount());
+
+        SqlSession session = DbHelper.getInstance().getSqlSession();
+        GamePaymentTypePriceDao gamePaymentTypePriceService = session.getMapper(GamePaymentTypePriceDao.class);
+        
+        List<GamePaymentTypePrice> select = gamePaymentTypePriceService.select();
+        System.out.println(select.size());
+        Integer gameId = 14;
+        Integer paymentTypeId = 1;
+        List<GamePaymentTypePrice> findByGameIdAndPaymentTypeId = gamePaymentTypePriceService.findByGameIdAndPaymentTypeId(gameId, paymentTypeId);
+        System.out.println(findByGameIdAndPaymentTypeId.size());
+        String currency = "USD";
+        BigDecimal amount = new BigDecimal(5);
+        GamePaymentTypePrice findByGameIdCurrencyAndAmount = gamePaymentTypePriceService.findByGameIdCurrencyAndAmount(gameId, paymentTypeId, currency, amount);
+        String description = "abc";
+        System.out.println(findByGameIdCurrencyAndAmount.getAmount());
+        GamePaymentTypePrice findByGameIdCurrencyAndAmount2 = gamePaymentTypePriceService.findByGameIdCurrencyAndAmount(gameId, paymentTypeId, currency, amount, description);
+        System.out.println(findByGameIdCurrencyAndAmount2.getAmount());
+       
+        session.commit();
+        session.close();
+         */
+        return 1;
     }
 
 }

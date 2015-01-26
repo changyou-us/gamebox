@@ -4,15 +4,17 @@
  */
 package com.gamebox.dao;
 
-import java.util.List;
-
 import com.gamebox.model.Users;
 
 /**
  * @author wuji
  * 
  */
-public interface UsersDao extends BaseDao<Users>{
+public interface UsersDao {
 
-    Users findUserById(String uid);
+    int insert(Users users);
+    
+    Users findUserByUserId(String userId);
+
+    Users findUserByEmail(String email);
 }

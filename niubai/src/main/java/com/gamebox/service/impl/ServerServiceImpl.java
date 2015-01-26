@@ -4,13 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -18,15 +16,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import javax.annotation.Resource;
-
 import net.sf.json.JSONObject;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.gamebox.dao.DirectPaymentOrderDao;
 import com.gamebox.dao.GamePaymentTypePriceDao;
@@ -40,7 +34,6 @@ import com.gamebox.model.Server.DisplayType;
 import com.gamebox.model.Server.IsNewType;
 import com.gamebox.model.Server.RecommendedType;
 import com.gamebox.model.Users;
-import com.gamebox.model.Webgame;
 import com.gamebox.model.Webgame.OpenStatusType;
 import com.gamebox.service.GameService;
 import com.gamebox.service.ServerService;
@@ -104,57 +97,31 @@ public class ServerServiceImpl  implements ServerService {
     // 占位符，替换成昨天的日期
     private static final String RANK_GAME_YESTERDAY = "$(yesterday)";
 
-    @Resource(name = "directPaymentOrderDaoImpl")
+    @Autowired
     private DirectPaymentOrderDao directPaymentOrderDao;
 
-    @Resource(name = "serverDaoImpl")
+    @Autowired
     private ServerDao serverDao;
 
-    @Resource(name = "gameServiceImpl")
+    @Autowired
     private GameService gameService;
 
-    @Resource(name = "usersDao")
+    @Autowired
     private UsersDao usersDao;
 
-    @Resource(name = "gamePaymentTypePriceDaoImpl")
+    @Autowired
     private GamePaymentTypePriceDao gamePaymentTypePriceDao;
 
-
-    @Transactional(readOnly = true)
-    public Server find(Long id) {
-
-        return null;
-    }
-
-    @Transactional
-    @CacheEvict(value = { "server" }, allEntries = true)
-    public void save(Server server) {
-
-//        Assert.notNull(server);
-//
-//        super.save(server);
-//        serverDao.flush();
-//
-//        if (server.getDisplay() != null) {
-//            if (server.getDisplay() == DisplayType.display) {
-//
-//            }
-//        }
-    }
-
-    @Transactional(readOnly = true)
     public boolean serverExists(Integer serverId, Integer gameId) {
 
         return serverDao.serverExists(serverId, gameId);
     }
 
-    @Transactional(readOnly = true)
     public boolean serverExists(Integer serverId, Integer gameId, OpenStatusType openStatus, DisplayType display) {
 
         return serverDao.serverExists(serverId, gameId, openStatus, display);
     }
 
-    @Transactional
     public boolean updateImm(Integer serverId, Integer gameId, String pName, Object pValue) {
 
         boolean result = false;
@@ -181,30 +148,17 @@ public class ServerServiceImpl  implements ServerService {
         return result;
     }
 
-    @Transactional
-    @CacheEvict(value = { "server" }, allEntries = true)
-    public Server update(Server server) {
-
-        int result = serverDao.update(server);
-        // staticService.build(serverDao.findByGameId(server.getGameId(), false), server.getGameId());
-        return server;
-    }
-
-
-    @Transactional(readOnly = true)
     public Server findServerByGidAndSid(Integer gid, Integer sid) {
 
         return serverDao.findServerByGidAndSid(gid, sid);
     }
 
-    @Transactional(readOnly = true)
-    @Cacheable("server")
+    //@Cacheable("server")
     public List<Server> findByGameId(Integer gid, Boolean invalid) {
 
         return serverDao.findByGameId(gid, invalid);
     }
 
-    @Transactional(readOnly = true)
     public String buildGameUrl(Integer gameId, Integer serverId, Users user) {
 
         Server server = serverDao.findServerByGidAndSid(gameId, serverId);
@@ -235,7 +189,6 @@ public class ServerServiceImpl  implements ServerService {
                 oauth, "", user.getNickname(), "");
     }
 
-    @Transactional(readOnly = true)
     public String buildRankUrl(Integer gameId, Integer serverId, String type) {
 
         Server server = serverDao.findServerByGidAndSid(gameId, serverId);
@@ -348,7 +301,8 @@ public class ServerServiceImpl  implements ServerService {
 
     @Override
     public int gamesCharge(DirectPaymentOrder directPaymentOrder) {
-
+        return 0;
+/*
         if (directPaymentOrder.getStatus().equals(OrderStatus.COMPLETED)) {
             return 1;
         }
@@ -378,7 +332,7 @@ public class ServerServiceImpl  implements ServerService {
         String description = directPaymentOrder.getDescription();
         return this.recharge(gameId, serverId, directPaymentOrder.getUserId(), amount, ordersn, roleId, roleName,
                 gameCoins, gameCoin, coinBonus, paymentName, currency, true, description);
-
+*/
     }
 
 
@@ -397,7 +351,7 @@ public class ServerServiceImpl  implements ServerService {
         String expectResult = server.getRechargeSign();
         String auth = "";
         if (isValidate) {
-            uid = gameService.getPlayerId(gameId, usersDao.findUserById(uid));
+            uid = gameService.getPlayerId(gameId, usersDao.findUserByUserId(uid));
         }
 
         if (server.getTransIdUsedStatus().equals(Server.TransIdUsedStatus.USED)) {
@@ -524,73 +478,10 @@ public class ServerServiceImpl  implements ServerService {
         }
     }
 
-    public int updateStatus(Long[] ids, Integer status) {
-
-        return serverDao.updateStatus(ids, status);
-    }
-
-    
-
-    /*
-     * (non-Javadoc)
-     * @see com.gamebox.service.ServerService#getSeversByGameId(java.lang.Integer)
-     */
-    @Override
-    public List<Server> getSeversByGameId(Integer gameId) {
-
-        List<Webgame> games = null;
-        List<Server> servers = null;
-       
-
-//        List<Filter> filters = new ArrayList<Filter>(1);
-//        Filter filter = new Filter();
-//        filter.setOperator(Operator.eq);
-//        filter.setProperty("gameId");
-//        filter.setValue(gameId);
-//        filters.add(filter);
-//
-//        List<Order> orders = new ArrayList<Order>(1);
-//        Order gameOrder = new Order();
-//        gameOrder.setDirection(Direction.asc);
-//        gameOrder.setProperty("gameId");
-//
-//        Order serverOrder = new Order();
-//        serverOrder.setDirection(Direction.asc);
-//        serverOrder.setProperty("serverId");
-//
-//        orders.add(gameOrder);
-//        orders.add(serverOrder);
-//        if (null == gameId) {
-//            games = gameService.findAll();
-//            servers = this.findList(null, null, orders);
-//            fixGamename2Server(games, servers);
-//            return servers;
-//        }
-//        servers = this.findList(null, filters, orders);
-//        Webgame game = gameService.findByGameId(gameId);
-//        for (Server server : servers) {
-//            server.setGameName(game.getName());
-//        }
-        return servers;
-    }
     
     public Integer getNewestServerId(Integer gameId){
         return serverDao.getNewestServerId(gameId);
     }
 
-    /**
-     * @param games
-     * @param servers
-     */
-    private void fixGamename2Server(List<Webgame> games, List<Server> servers) {
-
-        for (Server server : servers) {
-            for (Webgame game : games) {
-                if (server.getGameId().equals(game.getGameId())) {
-                    server.setGameName(game.getName());
-                }
-            }
-        }
-    }
 
 }

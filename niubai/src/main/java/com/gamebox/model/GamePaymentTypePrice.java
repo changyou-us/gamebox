@@ -9,7 +9,11 @@ public class GamePaymentTypePrice extends BaseEntity implements java.io.Serializ
 
 	// Fields
 	
-	/** 游戏ID */
+	/**
+     * 
+     */
+    private static final long serialVersionUID = -3034580863253476470L;
+    /** 游戏ID */
 	private Integer gameId;
 	/** 支付方式/渠道ID */
 	private Integer paymentTypeId;

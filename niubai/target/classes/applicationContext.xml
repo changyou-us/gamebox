@@ -8,6 +8,9 @@
 	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.2.xsd"
 	default-lazy-init="true">
 
+<context:property-placeholder location="classpath*:/gamebox.properties" ignore-resource-not-found="true" ignore-unresolvable="true" />
+
+<!-- 
 <bean id="freeMarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
 		<property name="templateLoaderPaths" value="${template.loader_path}" />
 		<property name="freemarkerSettings">
@@ -81,9 +84,9 @@
 				<prop key="mail.smtp.auth">${mail.smtp.auth}</prop>
 				<prop key="mail.smtp.timeout">${mail.smtp.timeout}</prop>
 				<prop key="mail.smtp.starttls.enable">${mail.smtp.starttls.enable}</prop>
-				<!--
+				
 				<prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
-				-->
+				
 			</props>
 		</property>
 	</bean>
@@ -96,5 +99,5 @@
 	</bean>
 
 	<task:annotation-driven />
-
+ -->
 </beans>

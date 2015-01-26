@@ -44,20 +44,6 @@ public interface ServerService {
     boolean serverExists(Integer serverId, Integer gameId, OpenStatusType openStatus, DisplayType display);
 
     /**
-     * 更新指定字段
-     * 
-     * @param serverId
-     *            服务器ID
-     * @param gameId
-     *            游戏ID
-     * @param pName
-     *            要修改的字段名
-     * @param pValue
-     *            要修改的字段值
-     */
-    boolean updateImm(Integer serverId, Integer gameId, String pName, Object pValue);
-
-    /**
      * 通过服务器ID和游戏ID查找
      * 
      * @param gid
@@ -132,17 +118,8 @@ public interface ServerService {
             String paymentName, String currency, boolean isValidate, String description);
 
     public Map<String, String> getMapByServer(Server server);
-    
-    public int updateStatus(Long[] ids, Integer status);
 
     int gamesCharge(DirectPaymentOrder directPaymentOrder);
-
-    /**
-     * 根据游戏获取服务器
-     * @param gameId
-     * @return
-     */
-    List<Server> getSeversByGameId(Integer gameId);
 
     public Integer getNewestServerId(Integer gameId);
 }

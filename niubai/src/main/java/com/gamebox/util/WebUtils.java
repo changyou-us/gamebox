@@ -13,7 +13,6 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
@@ -42,6 +41,8 @@ public final class WebUtils {
     public final static String COOKIE_PREFIX = "gamebox_";
 
     public final static String COOKIE_AUTH = "auth";
+    
+    public final static Integer COOKIE_AGE = 999999999;
     
     public final static String COOKIE_DOMAIN = ".gamebox.com";
     
@@ -508,7 +509,7 @@ public final class WebUtils {
             // 建立实际的连接
             httpConn.connect();
             // 响应头部获取
-            Map<String, List<String>> headers = httpConn.getHeaderFields();
+            //Map<String, List<String>> headers = httpConn.getHeaderFields();
             // 遍历所有的响应头字段
             /*
             for (String key : headers.keySet()) {

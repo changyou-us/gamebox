@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gamebox.dao.GameDao">
+  
+  
+  <resultMap id="webgameMap" type="com.gamebox.model.Webgame" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="game_id" property="gameId" jdbcType="INTEGER" />
+    <result column="default_server_id" property="defaultServerId" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="findByGameId" resultMap="webgameMap" parameterType="java.lang.Integer">
+  	select * from gamebox_webgame
+  	where game_id = #{gameId,jdbcType=INTEGER} 
+  </select>
+  
+</mapper>
