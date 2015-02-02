@@ -11,7 +11,6 @@ import com.gamebox.service.UsersService;
 public class UsersServiceImpl implements UsersService{
     
     @Autowired
-    //@Resource(name="userMapper")
     private UsersDao usersDao;
 
     @Override

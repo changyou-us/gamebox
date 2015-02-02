@@ -45,20 +45,6 @@ public abstract class BaseEntity implements Serializable {
     /** "修改日期"属性名称 */
     public static final String MODIFY_DATE_PROPERTY_NAME = "modifyDate";
 
-    /**
-     * 保存验证组
-     */
-    public interface Save extends Default {
-
-    }
-
-    /**
-     * 更新验证组
-     */
-    public interface Update extends Default {
-
-    }
-
     /** ID */
     private Integer id;
 

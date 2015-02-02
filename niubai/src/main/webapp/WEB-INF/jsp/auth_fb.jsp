@@ -6,8 +6,8 @@
 <meta name="author" content="GAMEBOX Team" />
 <meta name="copyright" content="GAMEBOX" />
 <script type="text/javascript">
-//top.location.href = '${authUrl}';
-top.location.href = 'http://www.baidu.com';
+top.location.href = '${authUrl}';
+//top.location.href = 'http://www.baidu.com';
 </script>
 </head>
 <body>

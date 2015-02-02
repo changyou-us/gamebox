@@ -14,7 +14,7 @@
   </resultMap>
   
   <insert id="insert" parameterType="com.gamebox.model.FacebookUserBusiness" useGeneratedKeys="true" keyProperty="id">
-    insert into gamebox_users (scope_id, 
+    insert into gamebox_facebook_user_business (scope_id, 
     						   app_id, 
     						   user_id, 
     						   create_date, 
@@ -29,7 +29,16 @@
   </insert>
   <select id="findBusinessByScopeId" resultMap="facebookUserBusinessMap" parameterType="java.lang.String">
   	select * from gamebox_facebook_user_business
-  	where scope_id = #{gameId,jdbcType=VARCHAR}
+  	where scope_id = #{scopeId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="findBusinessByScopeIdList" resultMap="facebookUserBusinessMap" parameterType="java.util.List">
+  	
+  	<foreach collection="list" item="item" index="index" separator="union"> 
+		select * from gamebox_facebook_user_business
+  	    where scope_id = #{item,jdbcType=VARCHAR}
+	</foreach>
+	limit 1
   </select>
   
 </mapper>

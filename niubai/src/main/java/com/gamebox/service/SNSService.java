@@ -7,7 +7,7 @@ import com.gamebox.model.Users;
 
 public interface SNSService {
 
-    Users getFacebookUser(String scopeId, String appId, String accessToken, Users newUsers);
+    Users getFacebookUser(String scopeId, String appId, String accessToken, HttpServletRequest request);
 
     Users getExistFacebookUser(String scopeId, String appId, String accessToken);
     

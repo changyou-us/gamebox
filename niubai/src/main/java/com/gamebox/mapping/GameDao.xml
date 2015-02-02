@@ -6,7 +6,25 @@
   <resultMap id="webgameMap" type="com.gamebox.model.Webgame" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="game_id" property="gameId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="identifier" property="identifier" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="open_status" property="openStatus" jdbcType="INTEGER" />
+    <result column="hight" property="hight" jdbcType="VARCHAR" />
+    <result column="width" property="width" jdbcType="VARCHAR" />
+    <result column="homepage" property="homepage" jdbcType="VARCHAR" />
+    <result column="activation_code" property="activationCode" jdbcType="INTEGER" />
+    <result column="activation_grant" property="activationGrant" jdbcType="INTEGER" />
+    <result column="recharge_status" property="rechargeStatus" jdbcType="INTEGER" />
     <result column="default_server_id" property="defaultServerId" jdbcType="VARCHAR" />
+    <result column="logo_url" property="logoUrl" jdbcType="VARCHAR" />
+    <result column="coin_name" property="coinName" jdbcType="VARCHAR" />
+    <result column="area" property="area" jdbcType="VARCHAR" />
+    <result column="game_type" property="gameType" jdbcType="INTEGER" />
+    <result column="game_owner" property="gameOwner" jdbcType="INTEGER" />
+    <result column="rank_url" property="rankUrl" jdbcType="VARCHAR" />
+    <result column="rank_secret" property="rankSecret" jdbcType="VARCHAR" />
+    <result column="rank_key" property="rankKey" jdbcType="VARCHAR" />
   </resultMap>
   
   <select id="findByGameId" resultMap="webgameMap" parameterType="java.lang.Integer">

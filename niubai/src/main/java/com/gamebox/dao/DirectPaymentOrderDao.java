@@ -5,7 +5,7 @@ import com.gamebox.model.DirectPaymentOrder;
 
 public interface DirectPaymentOrderDao {
 
-    void save(DirectPaymentOrder directPaymentOrder);
+    void insert(DirectPaymentOrder directPaymentOrder);
 
     void update(DirectPaymentOrder directPaymentOrder);
 

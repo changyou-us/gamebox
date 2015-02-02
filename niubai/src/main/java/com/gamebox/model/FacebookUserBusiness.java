@@ -9,7 +9,7 @@ import java.io.Serializable;
  * 
  *         2014-7-16
  */
-public class FacebookUserBusiness implements Serializable {
+public class FacebookUserBusiness extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -17,7 +17,7 @@ public class FacebookUserBusiness implements Serializable {
 
     private String scopeId;
 
-    private String user_id;
+    private String userId;
 
     /**
      * @return the appId
@@ -53,21 +53,14 @@ public class FacebookUserBusiness implements Serializable {
         return scopeId;
     }
 
-    /**
-     * @param user_id
-     *            the user_id to set
-     */
-    public void setUser_id(String user_id) {
+    public void setUserId(String userId) {
 
-        this.user_id = user_id;
+        this.userId = userId;
     }
 
-    /**
-     * @return the user_id
-     */
-    public String getUser_id() {
+    public String getUserId() {
 
-        return user_id;
+        return userId;
     }
 
 }

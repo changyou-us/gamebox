@@ -1,18 +1,16 @@
 package com.gamebox.controller;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.gamebox.model.GamePaymentTypePrice;
 import com.gamebox.model.TcpTest;
 import com.gamebox.service.GamePaymentTypePriceService;
 import com.gamebox.service.TcpTestService;
@@ -22,13 +20,13 @@ import com.gamebox.service.UsersService;
 @RequestMapping(value = "/test")
 public class TestController {
 
-    //@Resource(name = "testService")
+    @Autowired
     private TcpTestService testService;
     
-    @Resource(name = "usersServiceImpl")
+    @Autowired
     private UsersService usersService;
     
-    @Resource(name = "gamePaymentTypePriceServiceImpl")
+    @Autowired
     private GamePaymentTypePriceService gamePaymentTypePriceService;
 
     @RequestMapping(value = "/baidu", method = RequestMethod.GET)
@@ -57,8 +55,9 @@ public class TestController {
     @RequestMapping(value = "/save", method = RequestMethod.GET)
     @ResponseBody
     public int save(HttpServletRequest request, ModelMap model) {
-
-        Integer gameId = 1;
+        testService.test();
+        /*
+        Integer gameId = 14;
         Integer paymentTypeId = 1;
         List<GamePaymentTypePrice> findByGameIdAndPaymentTypeId = gamePaymentTypePriceService.findByGameIdAndPaymentTypeId(gameId, paymentTypeId);
         System.out.println(findByGameIdAndPaymentTypeId.size());
@@ -69,7 +68,7 @@ public class TestController {
         System.out.println(findByGameIdCurrencyAndAmount.getAmount());
         GamePaymentTypePrice findByGameIdCurrencyAndAmount2 = gamePaymentTypePriceService.findByGameIdPaymentTypeIdCurrencyAmountAndDescription(gameId, paymentTypeId, currency, amount, description);
         System.out.println(findByGameIdCurrencyAndAmount2.getAmount());
-        /*
+
         Users users = new Users();
         String email = OrderUtils.getOrderSn();
         System.out.println(email);

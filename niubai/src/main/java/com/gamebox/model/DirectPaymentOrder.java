@@ -11,6 +11,8 @@ public class DirectPaymentOrder extends BaseEntity implements java.io.Serializab
 	/**
      * 
      */
+    public static final Integer FACEBOOK_PAYMENT_TYPE_ID = 8;
+    
     private static final long serialVersionUID = 1L;
     // Fields
 	/**订单ID，订单表的业务主键，值为UUID类型  */

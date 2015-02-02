@@ -2,6 +2,7 @@ package com.gamebox.service.impl;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gamebox.dao.DirectPaymentOrderDao;
@@ -14,16 +15,16 @@ import com.gamebox.service.DirectPaymentOrderService;
  * @author Johnny Zhu
  * @version 1.0
  */
-@Service("directPaymentOrderServiceImpl")
+@Service
 public class DirectPaymentOrderServiceImpl implements DirectPaymentOrderService {
 
 
-	@Resource(name = "directPaymentOrderDaoImpl")
+    @Autowired
 	private DirectPaymentOrderDao directPaymentOrderDao;
 	
 	@Override
 	public void save(DirectPaymentOrder directPaymentOrder) {
-	    directPaymentOrderDao.save(directPaymentOrder);
+	    directPaymentOrderDao.insert(directPaymentOrder);
 	}
 
 	@Override

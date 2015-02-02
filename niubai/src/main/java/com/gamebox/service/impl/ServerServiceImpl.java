@@ -1,16 +1,9 @@
 package com.gamebox.service.impl;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -30,11 +23,10 @@ import com.gamebox.model.DirectPaymentOrder;
 import com.gamebox.model.GamePaymentTypePrice;
 import com.gamebox.model.OrderStatus;
 import com.gamebox.model.Server;
-import com.gamebox.model.Server.DisplayType;
-import com.gamebox.model.Server.IsNewType;
-import com.gamebox.model.Server.RecommendedType;
+import com.gamebox.model.DisplayType;
+import com.gamebox.model.TransIdUsedStatus;
 import com.gamebox.model.Users;
-import com.gamebox.model.Webgame.OpenStatusType;
+import com.gamebox.model.OpenStatusType;
 import com.gamebox.service.GameService;
 import com.gamebox.service.ServerService;
 import com.gamebox.util.Base64Util;
@@ -48,8 +40,8 @@ import com.gamebox.util.WebUtils;
  * @author Dick niu
  * @version 1.0
  */
-@Service("serverServiceImpl")
-public class ServerServiceImpl  implements ServerService {
+@Service
+public class ServerServiceImpl implements ServerService{
 
     public static final String IS_NEW_TYPE = "isNew";
 
@@ -112,53 +104,26 @@ public class ServerServiceImpl  implements ServerService {
     @Autowired
     private GamePaymentTypePriceDao gamePaymentTypePriceDao;
 
-    public boolean serverExists(Integer serverId, Integer gameId) {
-
-        return serverDao.serverExists(serverId, gameId);
-    }
-
+    @Override
     public boolean serverExists(Integer serverId, Integer gameId, OpenStatusType openStatus, DisplayType display) {
 
         return serverDao.serverExists(serverId, gameId, openStatus, display);
     }
 
-    public boolean updateImm(Integer serverId, Integer gameId, String pName, Object pValue) {
-
-        boolean result = false;
-        if (IS_NEW_TYPE.equals(pName)) {
-            if (IsNewType.fresh.name().equals(pValue.toString())) {
-                result = serverDao.updateIsNew(serverId, gameId, IsNewType.fresh);
-            }
-            else if (IsNewType.old.name().equals(pValue.toString())) {
-                result = serverDao.updateIsNew(serverId, gameId, IsNewType.old);
-            }
-
-        }
-        else if (RECOMMENDED_TYPE.equals(pName)) {
-            if (RecommendedType.recommended.name().equals(pValue.toString())) {
-                result = serverDao.updateRecommended(serverId, gameId, RecommendedType.recommended);
-            }
-            else if (RecommendedType.notRecommended.name().equals(pValue.toString())) {
-                result = serverDao.updateRecommended(serverId, gameId, RecommendedType.notRecommended);
-            }
-        }
-
-        // 重新生成服务器列表模板
-        // staticService.build(serverDao.findByGameId(gameId, true), gameId);
-        return result;
-    }
-
+    @Override
     public Server findServerByGidAndSid(Integer gid, Integer sid) {
 
         return serverDao.findServerByGidAndSid(gid, sid);
     }
 
     //@Cacheable("server")
+    @Override
     public List<Server> findByGameId(Integer gid, Boolean invalid) {
 
         return serverDao.findByGameId(gid, invalid);
     }
 
+    @Override
     public String buildGameUrl(Integer gameId, Integer serverId, Users user) {
 
         Server server = serverDao.findServerByGidAndSid(gameId, serverId);
@@ -173,9 +138,17 @@ public class ServerServiceImpl  implements ServerService {
         // 2.解析loginSecret
         String loginSecret = server.getLoginSecret();
         // 合服后是否启用transferedId
-        Integer sid = server.getTransIdUsedStatus() == Server.TransIdUsedStatus.NOT_USED ? server.getServerId()
+        Integer sid = server.getTransIdUsedStatus() == TransIdUsedStatus.NOT_USED ? server.getServerId()
                 : server.getTransferedId();
         String showId = server.getShowId() == null ? "" : Integer.toString(server.getShowId());
+        System.out.println(loginSecret);
+        System.out.println(sid.toString());
+        System.out.println(showId);
+        System.out.println(playerId);
+        System.out.println(randId);
+        System.out.println(time);
+        System.out.println(server.getPublicKey());
+        System.out.println(user.getNickname());
         loginSecret = replaceUrl(loginSecret, sid.toString(), showId, playerId, randId, time, server.getPublicKey(),
                 oauth, "", user.getNickname(), "");
         // 3.对loginSecret加密
@@ -189,6 +162,13 @@ public class ServerServiceImpl  implements ServerService {
                 oauth, "", user.getNickname(), "");
     }
 
+    private boolean verify(String string, String string2, String playerId, String randId, String time, String oauth,
+            String showId) {
+
+        return true;
+    }
+
+    @Override
     public String buildRankUrl(Integer gameId, Integer serverId, String type) {
 
         Server server = serverDao.findServerByGidAndSid(gameId, serverId);
@@ -199,7 +179,7 @@ public class ServerServiceImpl  implements ServerService {
         // 1.解析rankSecret
         String rankSecret = server.getRankSecret();
         // 合服后是否启用transferedId
-        Integer sid = server.getTransIdUsedStatus() == Server.TransIdUsedStatus.NOT_USED ? server.getServerId()
+        Integer sid = server.getTransIdUsedStatus() == TransIdUsedStatus.NOT_USED ? server.getServerId()
                 : server.getTransferedId();
         String showId = server.getShowId() == null ? "" : Integer.toString(server.getShowId());
         if (rankSecret != null && !"".equals(rankSecret)) {
@@ -212,6 +192,7 @@ public class ServerServiceImpl  implements ServerService {
     }
 
     // 0-orginalUrl, 1-serverId, 2-showId, 3-userId, 4-randId, 5-time, 6-key, 7-oauth, 8-type, 9-nick, 10-yesterday
+    
     private String replaceUrl(String... args) {
 
         for (int i = 0; i < args.length; i++) {
@@ -253,74 +234,26 @@ public class ServerServiceImpl  implements ServerService {
         return replaceAuth64(url.replaceFirst(LOGIN_GAME_AUTH64, Base64Util.encode(subStr, "UTF-8")), index++);
     }
 
-    private boolean verify(String gameId, String serverId, String userId, String randId, String time, String oauth,
-            String showId) {
-
-        if (gameId.equals(LOGIN_GAME_WARTUNE)) {
-            if ("4".equals(serverId)) {
-                serverId = "3";
-            }
-            String verfiyUrl = "http://s" + serverId + ".gamebox.com/createlogin?content=" + userId + "|" + randId
-                    + "|" + time + "|" + oauth + "&site=cy_000" + showId;
-            System.out.println(verfiyUrl);
-            try {
-                URL url = new URL(verfiyUrl);
-                URLConnection urlConn = url.openConnection();
-                BufferedReader bfr = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-                String msg = bfr.readLine();
-                bfr.close();
-                // 代理商登录不成功
-                if (!"0".equals(msg)) {
-                    return false;
-                }
-            }
-            catch (MalformedURLException e) {
-                return false;
-            }
-            catch (IOException e) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public Map<String, String> getMapByServer(Server server) {
-
-        Map<String, String> rmap = new HashMap<String, String>();
-        if (server != null && server.getDisplay() == DisplayType.display) {
-            rmap.put("serverId", server.getServerId().toString());
-            rmap.put("isNew", server.getIsNew().toString());
-            rmap.put("recommended", server.getRecommended().toString());
-            rmap.put("timezone", server.getTimezone().name());
-            rmap.put("name", server.getName());
-            rmap.put("status", server.getStatus().name());
-        }
-        return rmap;
-    }
-
     @Override
     public int gamesCharge(DirectPaymentOrder directPaymentOrder) {
-        return 0;
-/*
+
         if (directPaymentOrder.getStatus().equals(OrderStatus.COMPLETED)) {
             return 1;
         }
         Integer gameId = directPaymentOrder.getGameId();
         Integer serverId = directPaymentOrder.getServerId();
         Integer paymentTypeId = directPaymentOrder.getPaymentTypeId();
-        // String sid = serverId.toString();
-        // Server server = serverService.findServerByGidAndSid(gameId, serverId);
+        
         String amount = String.valueOf(directPaymentOrder.getConvertAmount());
         String paymentName = "facebook";
         String currency = directPaymentOrder.getCurrency();
         GamePaymentTypePrice gamePaymentTypePrice = null;
         if (gameId == 19) {
-            gamePaymentTypePrice = gamePaymentTypePriceDao.findByGameIdCurrencyAndAmount(gameId, paymentTypeId,
+            gamePaymentTypePrice = gamePaymentTypePriceDao.findByGameIdPaymentTypeIdCurrencyAmountAndDescription(gameId, paymentTypeId,
                     currency, directPaymentOrder.getAmount(), directPaymentOrder.getDescription());
         }
         else {
-            gamePaymentTypePrice = gamePaymentTypePriceDao.findByGameIdCurrencyAndAmount(gameId, paymentTypeId,
+            gamePaymentTypePrice = gamePaymentTypePriceDao.findByGameIdPaymentTypeIdCurrencyAndAmount(gameId, paymentTypeId,
                     currency, directPaymentOrder.getAmount());
         }
         Integer gameCoin = gamePaymentTypePrice.getGameCoin();
@@ -332,9 +265,8 @@ public class ServerServiceImpl  implements ServerService {
         String description = directPaymentOrder.getDescription();
         return this.recharge(gameId, serverId, directPaymentOrder.getUserId(), amount, ordersn, roleId, roleName,
                 gameCoins, gameCoin, coinBonus, paymentName, currency, true, description);
-*/
-    }
 
+    }
 
     @Override
     public int recharge(Integer gameId, Integer serverId, Integer userId, String amount, String ordersn, String roleId,
@@ -354,7 +286,7 @@ public class ServerServiceImpl  implements ServerService {
             uid = gameService.getPlayerId(gameId, usersDao.findUserByUserId(uid));
         }
 
-        if (server.getTransIdUsedStatus().equals(Server.TransIdUsedStatus.USED)) {
+        if (server.getTransIdUsedStatus().equals(TransIdUsedStatus.USED)) {
             serverId = server.getTransferedId();
             sid = server.getTransferedId().toString();
         }
@@ -478,7 +410,7 @@ public class ServerServiceImpl  implements ServerService {
         }
     }
 
-    
+    @Override
     public Integer getNewestServerId(Integer gameId){
         return serverDao.getNewestServerId(gameId);
     }

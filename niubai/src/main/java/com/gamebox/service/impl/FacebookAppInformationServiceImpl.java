@@ -2,16 +2,17 @@ package com.gamebox.service.impl;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gamebox.dao.FacebookAppInformationDao;
 import com.gamebox.model.FacebookAppInformation;
 import com.gamebox.service.FacebookAppInformationService;
 
-@Service("facebookAppInformationServiceImpl")
+@Service
 public class FacebookAppInformationServiceImpl implements FacebookAppInformationService {
 
-    @Resource(name = "facebookAppInformationDaoImpl")
+    @Autowired
     private FacebookAppInformationDao facebookAppInformationDao;
     
     @Override

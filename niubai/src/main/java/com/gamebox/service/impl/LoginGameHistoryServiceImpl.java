@@ -6,6 +6,7 @@ package com.gamebox.service.impl;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gamebox.dao.LoginGameHistoryDao;
@@ -18,14 +19,14 @@ import com.gamebox.service.LoginGameHistoryService;
  * @author Dick niu
  * @version 1.0
  */
-@Service("loginGameHistoryServiceImpl")
+@Service
 public class LoginGameHistoryServiceImpl implements LoginGameHistoryService {
 
-    @Resource(name = "loginGameHistoryDaoImpl")
+    @Autowired
     private LoginGameHistoryDao loginGameHistoryDao;
 
     public void save(LoginGameHistory loginGameHistory) {
 
-        loginGameHistoryDao.save(loginGameHistory);
+        loginGameHistoryDao.insert(loginGameHistory);
     }
 }

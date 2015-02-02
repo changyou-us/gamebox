@@ -14,6 +14,54 @@
         <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
             javaType="com.gamebox.model.OrderStatus" />
             
+        <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
+            javaType="com.gamebox.model.DisplayType" />
+            
+        <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
+            javaType="com.gamebox.model.IsNewType" />
+            
+        <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
+            javaType="com.gamebox.model.Partner" />
+            
+        <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
+            javaType="com.gamebox.model.RecommendedType" />
+            
+        <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
+            javaType="com.gamebox.model.StatusType" />
+            
+        <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
+            javaType="com.gamebox.model.TimezoneType" />
+            
+        <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
+            javaType="com.gamebox.model.TransIdUsedStatus" />
+            
+        <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
+            javaType="com.gamebox.model.ActivationCodeType" />
+            
+        <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
+            javaType="com.gamebox.model.ActivationGrantType" />
+            
+        <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
+            javaType="com.gamebox.model.AreaType" />
+            
+        <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
+            javaType="com.gamebox.model.GameOwnerType" />
+            
+        <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
+            javaType="com.gamebox.model.GameTypeType" />
+            
+        <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
+            javaType="com.gamebox.model.IsNewType" />
+            
+        <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
+            javaType="com.gamebox.model.OpenStatusType" />
+            
+        <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
+            javaType="com.gamebox.model.RechargeStatusType" />
+            
+        <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
+            javaType="com.gamebox.model.RecommendedType" />
+            
 	</typeHandlers>
 	
 
@@ -28,5 +76,4 @@
             </dataSource>
         </environment>
     </environments>
-    <mappers><mapper resource="com/gamebox/mapping/GamePaymentTypePriceDao.xml"/></mappers>
 </configuration>

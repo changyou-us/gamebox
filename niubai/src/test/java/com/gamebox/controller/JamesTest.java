@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.gamebox.dao.GamePaymentTypePriceDao;
@@ -30,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 public class JamesTest {
 
-    //@Autowired  
+    @Autowired  
     private WebApplicationContext wac;  
   
     private MockMvc mockMvc;  
@@ -39,8 +40,8 @@ public class JamesTest {
     public void setup() {  
         // webAppContextSetup 注意上面的static import  
         // webAppContextSetup 构造的WEB容器可以添加fileter 但是不能添加listenCLASS  
-        // WebApplicationContext context =  
-        // ContextLoader.getCurrentWebApplicationContext();  
+         WebApplicationContext context =  
+         ContextLoader.getCurrentWebApplicationContext();  
         // 如果控制器包含如上方法 则会报空指针  
         this.mockMvc = webAppContextSetup(this.wac).build();  
     }  
@@ -53,18 +54,20 @@ public class JamesTest {
     @Test  
     public void game() throws Exception {  
         
-        String Uname = "1";
-        String userid = "1";
-        String GameId = "";
-        String ServerId = "s0";
-        String Key = "MZfMA0GCSqGSIb3DQEBAQUAA3FSFOPSQKBgQDDMz3OCs5esvsp";
-        String Time = DateUtils.getCurrentTime().toString();
-        String from = "facebook";
-        String siteurl = "";
-        
-        String Sign = DigestUtils.md5Hex("Uname=$" + Uname + "&userid=$" + userid + "&GameId=$" + GameId + "&ServerId=$" + ServerId + "&Key=$" + Key + "&Time=$" + Time + "&al=$1&from=$facebook&siteurl=$");
-        String url = "http://mf-test.gamebox.com/mzhome/enlogin?Uname=" + Uname + "&userid=" + userid + "&GameId=" + GameId + "&ServerId=" + ServerId + "&Time=" + Time + "&al=1&from=facebook&siteurl=&Sign=" + Sign; 
+        String Uname = "5037";
+        String GameId = "20";
+        String ServerId = "S0";
+        String money = "100";
+        String RoleId = "1000006";
+        String ordersn = "01901b1dac684e4e9709a094420fa7dc";
+        String key = "MZfMA0GCSqGSIb3DQEBAQUAA3FSFOPSQKBgQDDMz3OCs5esvsp";
+        String a = "Depay=$&gDepay=$&addcoin=$&Uname=$" + Uname + "&Money=$" + money + "&GameId=$" + GameId + "&ServiceId=$" + ServerId + "&RoleId=$" + RoleId + "&Transactionid=$" + ordersn + "&Key=$" + key;
+        System.out.println(a);
+        System.out.println("Depay=$&gDepay=$&addcoin=$&Uname= $5037&Money=$100&GameId=$20&ServiceId=$S0&RoleId=$1000006&Transactionid=$01901b1dac684e4e9709a094420fa7dc&Key=$MZfMA0GCSqGSIb3DQEBAQUAA3FSFOPSQKBgQDDMz3OCs5esvsp");
+        String sign = DigestUtils.md5Hex(a);
+        String url = "http://mf-test.gamebox.com/mzpay/enpay?addcoin=&Uname=" + Uname + "&GameId=" + GameId+ "&Money=" + money + "&ServiceId=" + ServerId + "&RoleId=" + RoleId + "&Transactionid=" + ordersn + "&Depay=&gDepay=&Sign=" + sign; 
         System.out.println(url);
+        System.out.println("http://mf-test.gamebox.com/mzpay/enpay?addcoin=&Uname=5037&GameId=20&Money=100&ServiceId=S0&RoleId=1000006&Transactionid=01901b1dac684e4e9709a094420fa7dc&Depay=&gDepay=&Sign=214a12c99bee496ac3d3847fa28ea0a9");
     } 
     
     @Test

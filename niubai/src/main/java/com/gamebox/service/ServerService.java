@@ -1,13 +1,12 @@
 package com.gamebox.service;
 
 import java.util.List;
-import java.util.Map;
 
 import com.gamebox.model.DirectPaymentOrder;
 import com.gamebox.model.Server;
-import com.gamebox.model.Server.DisplayType;
+import com.gamebox.model.DisplayType;
 import com.gamebox.model.Users;
-import com.gamebox.model.Webgame.OpenStatusType;
+import com.gamebox.model.OpenStatusType;
 
 /**
  * Service - 管理员
@@ -17,16 +16,6 @@ import com.gamebox.model.Webgame.OpenStatusType;
  */
 public interface ServerService {
 
-    /**
-     * 判断服务器是否存在
-     * 
-     * @param serverId
-     *            服务器ID
-     * @param gameId
-     *            游戏ID
-     * @return 服务器是否存在
-     */
-    boolean serverExists(Integer serverId, Integer gameId);
 
     /**
      * 判断服务器是否存在
@@ -116,8 +105,6 @@ public interface ServerService {
      */
     public int recharge(Integer gameId, Integer serverId, Integer userId, String amount, String ordersn, String roleId, String roleName, Integer gameCoins, Integer gameCoin, Integer bonus,
             String paymentName, String currency, boolean isValidate, String description);
-
-    public Map<String, String> getMapByServer(Server server);
 
     int gamesCharge(DirectPaymentOrder directPaymentOrder);
 

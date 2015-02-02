@@ -14,5 +14,5 @@ import com.gamebox.model.LoginGameHistory;
  */
 public interface LoginGameHistoryDao {
 
-    public void save(LoginGameHistory loginGameHistory);
+    public void insert(LoginGameHistory loginGameHistory);
 }

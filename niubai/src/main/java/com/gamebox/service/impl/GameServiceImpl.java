@@ -1,6 +1,8 @@
 package com.gamebox.service.impl;
 
 import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gamebox.dao.GameDao;
@@ -28,10 +30,10 @@ public class GameServiceImpl implements GameService {
     // 占位符，对loginSecret进行32位加密
     private static final String LOGIN_GAME_OAUTH = "$(oauth)";
 
-    @Resource(name = "gameDaoImpl")
+    @Autowired
     private GameDao gameDao;
 
-    @Resource(name = "serverDaoImpl")
+    @Autowired
     private ServerDao serverDao;
 
     public Webgame findByGameId(Integer gameId) {

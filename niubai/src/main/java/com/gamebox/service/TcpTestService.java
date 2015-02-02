@@ -13,6 +13,8 @@ import com.gamebox.model.TcpTest;
  * 
  */
 public interface TcpTestService {
+    
+    void test();
 
     List<TcpTest> getAll();
 

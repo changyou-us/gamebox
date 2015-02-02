@@ -27,7 +27,7 @@
   </resultMap>
   
   <insert id="insert" parameterType="com.gamebox.model.DirectPaymentOrder" useGeneratedKeys="true" keyProperty="id">
-    insert into gamebox_users (order_sn, 
+    insert into gamebox_game_direct_payment_order (order_sn, 
     						   amount, 
     						   convert_amount, 
     						   currency, 
@@ -72,9 +72,8 @@
   </insert>
   
   <update id="update" parameterType="com.gamebox.model.DirectPaymentOrder" >
-    update gamebox_direct_payment_order
+    update gamebox_game_direct_payment_order
     set
-        name = #{name,jdbcType=VARCHAR},
         status = #{status,jdbcType=INTEGER}, 
         update_time = #{updateTime,jdbcType=INTEGER}, 
         modify_date = #{modifyDate,jdbcType=TIMESTAMP},
@@ -83,12 +82,12 @@
   </update>
   
   <select id="findByOrderSn" resultMap="directPaymentOrderMap" parameterType="java.lang.String">
-  	select * from gamebox_direct_payment_order
+  	select * from gamebox_game_direct_payment_order
   	where order_sn = #{ordersn,jdbcType=VARCHAR} 
   </select>
   
   <select id="findByTransactionId" resultMap="directPaymentOrderMap" parameterType="java.lang.String">
-  	select * from gamebox_direct_payment_order
+  	select * from gamebox_game_direct_payment_order
   	where transaction_id = #{transactionId,jdbcType=VARCHAR} 
   </select>
   

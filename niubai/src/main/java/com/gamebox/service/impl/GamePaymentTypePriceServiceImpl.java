@@ -16,12 +16,11 @@ import com.gamebox.service.GamePaymentTypePriceService;
  * @author Johnny Zhu
  * @version 1.0
  */
-@Service("gamePaymentTypePriceServiceImpl")
+@Service
 public class GamePaymentTypePriceServiceImpl implements GamePaymentTypePriceService{
 
 
 	@Autowired
-	//@Resource(name="studentMapper")
 	private GamePaymentTypePriceDao gamePaymentTypePriceDao;
 
     @Override

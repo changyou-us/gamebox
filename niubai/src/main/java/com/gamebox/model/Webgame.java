@@ -16,68 +16,6 @@ package com.gamebox.model;
  */
 public class Webgame extends BaseEntity implements java.io.Serializable{
 
- // Fields
-    public enum OpenStatusType {
-        /** 不可用 **/
-        disable,
-        /** 可用 **/
-        able
-    }
-
-    public enum ActivationCodeType {
-        /** 不需要 **/
-        noneed,
-        /** 需要 **/
-        need;
-    }
-
-    public enum ActivationGrantType {
-        /** 不发放 **/
-        noIssue,
-        /** 发放 **/
-        issue
-    }
-
-    public enum RechargeStatusType {
-        /** 未开放 **/
-        close,
-        /** 开放 **/
-        open;
-    }
-
-    public enum AreaType {
-        /** 北美 **/
-        US,
-        /** 印度 **/
-        IN,
-        /** 马来 **/
-        MY,
-        /** 欧洲 **/
-        EU,
-        /** 香港 **/
-        HK,
-        /** 巴西 **/
-        BR
-    }
-
-    public enum GameTypeType {
-        /** 页游 **/
-        webGame,
-        /** 端游 **/
-        clientGame
-    }
-
-    public enum GameOwnerType {
-        /** New Game Box **/
-        newGameBox,
-        /** Game Box **/
-        gameBox,
-        /** Game Fuse **/
-        gameFuse,
-        /** Tagame **/
-        tagame
-    }
-
     /**
      * 
      */

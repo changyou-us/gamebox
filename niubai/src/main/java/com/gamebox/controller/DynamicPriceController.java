@@ -1,31 +1,36 @@
 package com.gamebox.controller;
 
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONObject;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.converter.json.JacksonObjectMapperFactoryBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.deser.std.JacksonDeserializers;
 import com.gamebox.model.DirectPaymentOrder;
 import com.gamebox.model.GamePaymentTypePrice;
 import com.gamebox.model.OrderStatus;
 import com.gamebox.model.Users;
-import com.gamebox.model.AccountType;
 import com.gamebox.service.DirectPaymentOrderService;
 import com.gamebox.service.FacebookAppInformationService;
 import com.gamebox.service.GamePaymentTypePriceService;
 import com.gamebox.service.ServerService;
 import com.gamebox.util.Base64Util;
 import com.gamebox.util.DateUtils;
+import com.gamebox.util.HttpUtils;
 import com.gamebox.util.OrderUtils;
 import com.gamebox.util.WebUtils;
 
@@ -41,18 +46,16 @@ public class DynamicPriceController {
 
     private static final String NOT_LOGIN = "-1";
     
-    private static final Integer paymentTypeId = 101;
-    
-    @Resource(name = "directPaymentOrderServiceImpl")
+    @Autowired
     protected DirectPaymentOrderService directPaymentOrderService;
 
-    @Resource(name = "gamePaymentTypePriceServiceImpl")
+    @Autowired
     private GamePaymentTypePriceService gamePaymentTypePriceService;
     
-    @Resource(name = "facebookAppInformationServiceImpl")
+    @Autowired
     private FacebookAppInformationService facebookAppInformationService;
     
-    @Resource(name = "serverServiceImpl")
+    @Autowired
     private ServerService serverService;
     
     
@@ -66,20 +69,26 @@ public class DynamicPriceController {
             map.put(STATUS, NOT_LOGIN);
             return null;
         }
-        if (!users.getAccountType().equals(AccountType.facebook)) {
-            map.put(STATUS, ERROR);
-            return null;
-        }
         
-        
+        Integer gameId = directPaymentOrder.getGameId();
         String ordersn = OrderUtils.getOrderSn();
-        directPaymentOrder.setPaymentTypeId(paymentTypeId);
+        GamePaymentTypePrice gamePaymentTypePrice = gamePaymentTypePriceService.findByGameIdPaymentTypeIdCurrencyAndAmount(gameId, DirectPaymentOrder.FACEBOOK_PAYMENT_TYPE_ID, directPaymentOrder.getCurrency(), directPaymentOrder.getAmount());
+
+        Date date = new Date();
+        directPaymentOrder.setPaymentTypeId(DirectPaymentOrder.FACEBOOK_PAYMENT_TYPE_ID);
+        directPaymentOrder.setEmail("");
         directPaymentOrder.setUserId(users.getUserId());
         directPaymentOrder.setOrderSn(ordersn);
-        directPaymentOrder.setOrderTime(DateUtils.getCurrentTime());
-        directPaymentOrder.setStatus(OrderStatus.PENDING);
-        GamePaymentTypePrice gamePaymentTypePrice = gamePaymentTypePriceService.findByGameIdPaymentTypeIdCurrencyAndAmount(directPaymentOrder.getGameId(), paymentTypeId, directPaymentOrder.getCurrency(), directPaymentOrder.getAmount());
+        directPaymentOrder.setCoinAmount(gamePaymentTypePrice.getGameCoin());
         directPaymentOrder.setConvertAmount(gamePaymentTypePrice.getConvertAmount());
+        directPaymentOrder.setCreateDate(date);
+        directPaymentOrder.setOrderTime(DateUtils.getCurrentTime());
+        directPaymentOrder.setReissueUser("who");
+        directPaymentOrder.setStatus(OrderStatus.PENDING);
+        directPaymentOrder.setIp(HttpUtils.getIp(request));
+        if (gameId == 8 || gameId == 6) {
+            directPaymentOrder.setDescription(String.valueOf(System.currentTimeMillis()));
+        }
         directPaymentOrderService.save(directPaymentOrder);
         
         map.put("ordersn", ordersn);
@@ -145,7 +154,7 @@ public class DynamicPriceController {
             
                 
             contents.put("product", product);
-            contents.put("amount", directPaymentOrder.getAmount().toString());//充值金额与fb credit比例1:10
+            contents.put("amount", directPaymentOrder.getAmount().toString());
             contents.put("currency", directPaymentOrder.getCurrency());
            
             
@@ -154,8 +163,6 @@ public class DynamicPriceController {
             
             jsonMap.put("content", contents);
             jsonMap.put("method", request_type);
-            
-            
             return jsonMap;
         }
         return null;

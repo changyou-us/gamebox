@@ -1,11 +1,13 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8" />
 	<title></title>
     <link type="text/css" rel="stylesheet" href="/css/base.css"  />
-	<link type="text/css" rel="stylesheet" href="/css/mozhan.css"  />
+	<link type="text/css" rel="stylesheet" href="/css/mz.css"  />
+	<script type="text/javascript" src="/js/jquery-1.11.1.min.js" charset="utf-8"></script>
 </head>
 <body>
 	<div class="container">
@@ -14,18 +16,16 @@
         </div>-->
 		<div class="nav">			
 			<a href="" class="fanpage">fanpage</a>
-			<a href="" class="recharge">RECHARGE</a>
+			<a href="https://apps.facebook.com/623156901163938?credits=1" target="_blank" class="recharge">RECHARGE</a>
 		</div>
 		<!-- nav end -->
 		<div class="main tabContents_1">
 			<div class="tabsBox">
 				<div class="tabs_text">
 					<ul style="display:block" class="all_server">
-						<li><a href="#">CBT Server</a></li>
-						<li><a href="#">CBT Server</a></li>
-						<li><a href="#">CBT Server</a></li>
-						<li><a href="#">CBT Server</a></li>
-						<li><a href="#">CBT Server</a></li>
+						<c:forEach items="${serverList}" var="server">
+						<li><a href="/games/playpage?gameId=${gameId}&serverId=${server.serverId}">${server.name}</a></li>
+						</c:forEach>
 					</ul>
 				</div>
 				<!-- tabsBox end -->

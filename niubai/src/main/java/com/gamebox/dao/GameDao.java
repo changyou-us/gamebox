@@ -1,7 +1,5 @@
 package com.gamebox.dao;
 
-import java.util.List;
-
 import com.gamebox.model.Webgame;
 
 

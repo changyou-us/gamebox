@@ -11,9 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gamebox.model.DirectPaymentOrder;
@@ -32,16 +34,16 @@ import com.gamebox.util.WebUtils;
 @RequestMapping("/facebook/facebookRTU")
 public class RTUController {
 
-    @Resource(name = "directPaymentOrderServiceImpl")
+    @Autowired
     protected DirectPaymentOrderService directPaymentOrderService;
     
-    @Resource(name = "facebookAppInformationServiceImpl")
+    @Autowired
     protected FacebookAppInformationService facebookAppInformationService;
     
-    @Resource(name = "serverServiceImpl")
+    @Autowired
     protected ServerService serverService;
     
-    @Resource(name = "gamePaymentTypePriceServiceImpl")
+    @Autowired
     private GamePaymentTypePriceService gamePaymentTypePriceService;
     
     @RequestMapping(method = RequestMethod.GET)

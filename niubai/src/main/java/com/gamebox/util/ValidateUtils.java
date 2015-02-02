@@ -137,7 +137,7 @@ public final class ValidateUtils {
             return false;
         }
         Pattern pattern = Pattern.compile("[0-9]*");
-        return pattern.matcher(arg).matches() && (!arg.startsWith("0"));
+        return pattern.matcher(arg).matches();
     }
     
     public static void main(String[] args)

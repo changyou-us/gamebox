@@ -4,23 +4,23 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gamebox.model.LoginGameHistory;
 import com.gamebox.model.Server;
-import com.gamebox.model.Server.DisplayType;
+import com.gamebox.model.DisplayType;
 import com.gamebox.model.Users;
 import com.gamebox.model.Webgame;
-import com.gamebox.model.Webgame.OpenStatusType;
+import com.gamebox.model.OpenStatusType;
 import com.gamebox.service.GameService;
 import com.gamebox.service.LoginGameHistoryService;
 import com.gamebox.service.ServerService;
@@ -35,8 +35,8 @@ import com.gamebox.util.WebUtils;
  * @author niuhongliang_tmp
  * @version 1.0
  */
-@Controller("webgameGameController")
-@RequestMapping("/webgame/play")
+@Controller
+@RequestMapping("/games")
 public class GameController {
 
     public static final String LOGIN_RESULT_SUCCESS = "success";
@@ -49,18 +49,18 @@ public class GameController {
 
     public static final String LOGIN_MAINTAIN = "maintain";
 
-    @Resource(name = "gameServiceImpl")
+    @Autowired
     private GameService gameService;
 
-    @Resource(name = "serverServiceImpl")
+    @Autowired
     private ServerService serverService;
 
-    @Resource(name = "loginGameHistoryServiceImpl")
+    @Autowired
     private LoginGameHistoryService loginGameHistoryService;
 
-    @RequestMapping(value = "/login_game", method = RequestMethod.POST)
+    @RequestMapping(value = "/login")
     @ResponseBody
-    public Map<String, String> loginGame(String gameId, String serverId, HttpServletRequest request,
+    public Map<String, String> login(String gameId, String serverId, HttpServletRequest request,
             HttpServletResponse response) {
 
         Map<String, String> resultMap = new HashMap<String, String>();
@@ -119,11 +119,14 @@ public class GameController {
         return resultMap;
     }
 
-    @RequestMapping(value = "/play", method = RequestMethod.GET)
-    public String play(Integer gameId, String serverId, Model model) {
+    @RequestMapping(value = "/playpage", method = RequestMethod.GET)
+    public String playpage(Integer gameId, String serverId, ModelMap model) {
 
         if (serverId == null) {
             Webgame game = gameService.findByGameId(gameId);
+            if (game == null) {
+                return "redirect:/404.html";
+            }
             serverId = game.getDefaultServerId();
         }
         

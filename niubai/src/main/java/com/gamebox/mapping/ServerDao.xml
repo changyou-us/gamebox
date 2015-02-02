@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gamebox.dao.ServerDao">
+  
+  
+  <resultMap id="serverMap" type="com.gamebox.model.Server" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="server_id" property="serverId" jdbcType="INTEGER" />
+    <result column="game_id" property="gameId" jdbcType="INTEGER" />
+    <result column="game_name" property="gameName" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="show_id" property="showId" jdbcType="INTEGER" />
+    <result column="display" property="display" jdbcType="INTEGER" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="login_url" property="loginUrl" jdbcType="VARCHAR" />
+    <result column="orders" property="orders" jdbcType="INTEGER" />
+    <result column="recharge_url" property="rechargeUrl" jdbcType="VARCHAR" />
+    <result column="role_url" property="roleUrl" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="public_key" property="publicKey" jdbcType="VARCHAR" />
+    <result column="recharge_key" property="rechargeKey" jdbcType="VARCHAR" />
+    <result column="role_key" property="roleKey" jdbcType="VARCHAR" />
+    <result column="login_secret" property="loginSecret" jdbcType="VARCHAR" />
+    <result column="recharge_secret" property="rechargeSecret" jdbcType="VARCHAR" />
+    <result column="role_secret" property="roleSecret" jdbcType="VARCHAR" />
+    <result column="recharge_sign" property="rechargeSign" jdbcType="VARCHAR" />
+    <result column="timezone" property="timezone" jdbcType="INTEGER" />
+    <result column="partner" property="partner" jdbcType="INTEGER" />
+    <result column="is_new" property="isNew" jdbcType="INTEGER" />
+    <result column="recommended" property="recommended" jdbcType="INTEGER" />
+    <result column="transfered_id" property="transferedId" jdbcType="INTEGER" />
+    <result column="trans_id_used" property="transIdUsedStatus" jdbcType="INTEGER" />
+    <result column="rank_url" property="rankUrl" jdbcType="VARCHAR" />
+    <result column="rank_secret" property="rankSecret" jdbcType="VARCHAR" />
+    <result column="rank_key" property="rankKey" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="modify_date" property="modifyDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <select id="findServerByGidAndSid" resultMap="serverMap" parameterType="java.lang.Integer">
+  	select * from gamebox_server
+  	where game_id = #{gameId,jdbcType=INTEGER} and server_id = #{serverId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="findByGameId" resultMap="serverMap">
+  	select * from gamebox_server
+  	where game_id = #{gameId,jdbcType=INTEGER} and display = #{display,jdbcType=INTEGER}
+  </select>
+  
+  <select id="serverExists" resultType="java.lang.Boolean">
+  	select * from gamebox_server s, gamebox_webgame g
+  	where s.game_id = #{gameId,jdbcType=INTEGER} and 
+  		  s.server_id = #{serverId,jdbcType=INTEGER} and 
+  		  s.display = #{display,jdbcType=INTEGER} and 
+  		  g.open_status = #{openStatus,jdbcType=INTEGER} limit 1  
+  </select>
+  
+  <select id="getNewestServerId" resultMap="serverMap" parameterType="java.lang.String">
+  	select * from gamebox_server
+  	where game_id = #{gameId,jdbcType=VARCHAR} order by server_id desc limit 1
+  </select>
+  
+</mapper>
