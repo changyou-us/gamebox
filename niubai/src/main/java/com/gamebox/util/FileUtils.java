@@ -98,7 +98,7 @@ public class FileUtils {
         String content = logContent.toString();
         System.out.println(content);
         
-        com.ad.util.KafkaProducer.sendMsg("newgameboxad", content);
+        //com.ad.util.KafkaProducer.sendMsg("newgameboxad", content);
         
         String yearMonth = DateUtils.convertDateToString(new Date(), "yyyyMMdd", "-8");
         String logDir = "/usr/local/webapps/";
@@ -155,7 +155,7 @@ public class FileUtils {
 	 * * @param append
 	 * 			是否写入文件末尾  
 	 */
-	public static void writeFile(String path, String content, boolean append) {
+	public synchronized static void writeFile(String path, String content, boolean append) {
 	    try {
             File file = new File(path);
             FileOutputStream out = new FileOutputStream(file, append);

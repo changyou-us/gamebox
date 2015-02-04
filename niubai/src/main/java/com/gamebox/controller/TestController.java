@@ -1,5 +1,6 @@
 package com.gamebox.controller;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,11 +16,15 @@ import com.gamebox.model.TcpTest;
 import com.gamebox.service.GamePaymentTypePriceService;
 import com.gamebox.service.TcpTestService;
 import com.gamebox.service.UsersService;
+import com.gamebox.xmemcached.MemcachedCacheManager;
 
 @Controller
 @RequestMapping(value = "/test")
 public class TestController {
 
+    @Autowired
+    private MemcachedCacheManager memcachedCacheManager;
+    
     @Autowired
     private TcpTestService testService;
     
@@ -49,6 +54,27 @@ public class TestController {
     public String update(TcpTest test) {
 
         testService.updateById(test);
+        return "OK";
+    }
+    
+    @RequestMapping(value = "/ksd", method = RequestMethod.GET)
+    @ResponseBody
+    public String ksd() {
+
+        System.out.println(testService.cache());
+        System.out.println(testService.cache1());
+        return "OK";
+    }
+    
+    @RequestMapping(value = "/evict", method = RequestMethod.GET)
+    @ResponseBody
+    public String evict() {
+
+        String[] arrays = {"ksd","frank"};
+        
+        for (String s : arrays) {
+            memcachedCacheManager.getCache(s).clear();
+        }
         return "OK";
     }
     

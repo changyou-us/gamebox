@@ -117,6 +117,7 @@ public class AuthorizationController {
             
         if (rccId != null) {
             FileUtils.writeLog(request, "guanggao.log", rccId, user.getUserId());
+            return "redirect:https://" + request.getServerName() + "/ad/" + rccId + ".html";
         }
             
         setLoginInfo2Cache(user, request, response);

@@ -29,7 +29,7 @@ public class MemcachedCacheManager extends AbstractTransactionSupportingCacheMan
     private MemcachedClient memcachedClient;
 
     public MemcachedCacheManager() {
-
+        
     }
 
     @Override

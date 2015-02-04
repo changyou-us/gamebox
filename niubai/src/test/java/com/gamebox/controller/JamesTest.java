@@ -45,13 +45,11 @@ public class JamesTest {
         // 如果控制器包含如上方法 则会报空指针  
         this.mockMvc = webAppContextSetup(this.wac).build();  
     }  
-    
-    @Test  
+      
     public void test() throws Exception {  
         mockMvc.perform(get("/test/save"));  
     } 
     
-    @Test  
     public void game() throws Exception {  
         
         String Uname = "5037";
@@ -72,6 +70,15 @@ public class JamesTest {
     
     @Test
     public void made() {
+        try {
+            mockMvc.perform(get("/test/ksd"));
+            //mockMvc.perform(get("/test/evict"));
+            mockMvc.perform(get("/test/ksd"));
+        }
+        catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }  
         /*
         SqlSession session = DbHelper.getInstance().getSqlSession();
         GamePaymentTypePriceDao gamePaymentTypePriceService = session.getMapper(GamePaymentTypePriceDao.class);

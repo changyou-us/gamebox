@@ -139,13 +139,7 @@
     <bean id="memcachedClient" factory-bean="memcachedClientBuilder" factory-method="build" destroy-method="shutdown"/>  
       
     <bean id="cacheManager" class="com.gamebox.xmemcached.MemcachedCacheManager">  
-        <property name="memcachedClient" ref="memcachedClient" />  
-        <property name="configMap">  
-            <map>  
-                <!-- key：@Cacheable、@CachePut、@CacheEvict等的name属性。value：缓存过期时间(单位：秒)，默认值：00 -->  
-                <entry key="test" value="3600" />
-            </map>  
-        </property>  
+        <property name="memcachedClient" ref="memcachedClient" /> 
     </bean>  
       
     <cache:annotation-driven cache-manager="cacheManager"/>  

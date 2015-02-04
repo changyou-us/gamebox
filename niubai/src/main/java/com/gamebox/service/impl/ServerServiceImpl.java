@@ -13,6 +13,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.gamebox.dao.DirectPaymentOrderDao;
@@ -116,7 +117,7 @@ public class ServerServiceImpl implements ServerService{
         return serverDao.findServerByGidAndSid(gid, sid);
     }
 
-    //@Cacheable("server")
+    @Cacheable("server")
     @Override
     public List<Server> findByGameId(Integer gid, Boolean invalid) {
 

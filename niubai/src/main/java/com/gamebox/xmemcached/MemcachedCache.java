@@ -9,6 +9,8 @@
  */
 package com.gamebox.xmemcached;
 
+import java.util.Set;
+
 import net.rubyeye.xmemcached.MemcachedClient;
 
 import org.springframework.cache.Cache;
@@ -47,6 +49,8 @@ public class MemcachedCache implements Cache
     @Override
     public ValueWrapper get(Object key)
     {
+        Set<String> keySet = memCache.getKeySet();
+        keySet.add(key.toString());
         ValueWrapper wrapper = null;
         Object value = memCache.get(key.toString());
         if (value != null)

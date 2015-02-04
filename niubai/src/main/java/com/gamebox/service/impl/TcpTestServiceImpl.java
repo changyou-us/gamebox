@@ -6,6 +6,7 @@ package com.gamebox.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -80,6 +81,22 @@ public class TcpTestServiceImpl implements TcpTestService {
     public void test() {
 
         System.out.println(serverDao.serverExists(1, 14, OpenStatusType.able, DisplayType.display));
+    }
+
+    @Override
+    @Cacheable("ksd")
+    public String cache() {
+
+        // TODO Auto-generated method stub
+        return UUID.randomUUID().toString();
+    }
+    
+    @Override
+    @Cacheable("frank")
+    public String cache1() {
+
+        // TODO Auto-generated method stub
+        return UUID.randomUUID().toString();
     }
 
 }

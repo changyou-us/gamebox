@@ -55,9 +55,9 @@
   		  g.open_status = #{openStatus,jdbcType=INTEGER} limit 1  
   </select>
   
-  <select id="getNewestServerId" resultMap="serverMap" parameterType="java.lang.String">
+  <select id="getNewestServerId" resultMap="serverMap" parameterType="java.lang.Integer">
   	select * from gamebox_server
-  	where game_id = #{gameId,jdbcType=VARCHAR} order by server_id desc limit 1
+  	<![CDATA[ where game_id = #{gameId,jdbcType=VARCHAR} and server_id < 1000 order by server_id desc limit 1 ]]>
   </select>
   
 </mapper>

@@ -1,0 +1,44 @@
+@charset "utf-8";
+body { min-width:1000px; min-height:800px; width:100%; height:100%; background:url(https://dzkruhbej0os7.cloudfront.net/hz/hz_fb1.jpg) no-repeat center top; font-family:'Open Sans';}
+.container { margin:0px auto; width:600px; height:530px; position:relative;top: 27px; background:url(https://dzkruhbej0os7.cloudfront.net/hz/hz_fb2.jpg) no-repeat center top;z-index:1; }
+/*.nav { width:100%; height:46px; position:absolute; top:185px; left:0px; z-index:1; }
+.nav a { display:block; position:absolute;width: 140px;height: 35px;text-indent: -9999px; z-index:3;background: url(https://dzkruhbej0os7.cloudfront.net/hz/hz_fb3.jpg) no-repeat ;}
+.nav a.recharge{left: 300px;background-position: -148px -4px;}
+.nav a.recharge:hover{background-position: -148px -43px;}
+.nav a.fanpage{left: 125px;}
+.nav a.fanpage:hover{background-position: -4px -43px;}*/
+.main { width:100%;height: 250px;position: relative;left: 10px;top: 130px;overflow: hidden; }
+
+.tabsBox{width: 490px;height: 250px;position: absolute;top:0px;left: 30px; }
+.new_server ul { width:100%; height:100%;  }
+.new_server ul li { margin-bottom: 10px;  width: 133px;height: 30px;margin-left: 0px;background: url(https://dzkruhbej0os7.cloudfront.net/il/il8.png)no-repeat 0px 0px;line-height: 28px;text-align: center; position: relative; }
+.new_server ul li:hover{color: #fff8bb; background-position:0px -30px;}
+
+/*.icon.icon_w { background-position: 0px 0px; }
+.icon.icon_e { background-position: 0px -22px; }
+.icon.icon_g { background-position: 0px -44px; }
+.icon.icon_o { background-position: 0px -66px; }*/
+.tabs_text { width: 490px; height: 250px;  }
+.tabs_text ul { display: none; }
+.tabs_text li{width: 159px;height: 43px;background: url(https://dzkruhbej0os7.cloudfront.net/hz/hz_fb3.jpg) no-repeat -4px -85px;line-height: 28px;text-align: center;float: left;margin: 10px 20px 8px 0px; position: relative;}
+.recent_server .ser_btn a,
+.new_server ul li a,
+.tabs_text li a { display: block; width: 159px; height: 43px; line-height: 37px;background: url(https://dzkruhbej0os7.cloudfront.net/hz/hz_fb3.jpg) no-repeat 0px 0px; position: absolute; top: 0; left: 0; z-index: 3;color:rgb(124,15,13); font-family: Georgia;font-size: 16px;font-weight: bolder;text-transform: uppercase;
+	-webkit-text-shadow:0px 0px 20px #f00a06;
+ 	-moz-text-shadow:0px 0px 20px #f00a06;
+    text-shadow: 1px 1px 0 #E4F1FF;		
+}
+.recent_server .ser_btn:hover,
+.tabs_text li a:hover{background-position: 0px -43px;}
+
+.download_box { width: 97%;height: 384px;position: absolute;left: 10px;top: 80px;overflow: hidden; }
+.download_box li{float: left; width: 169px;height: 169px;background: url(https://dzkruhbej0os7.cloudfront.net/il/il9.png)no-repeat;margin: 100px 0px 0px 48px;}
+.download_box li:first-child{margin-left: 104px;}
+.download_box li a{width: 120px;height: 55px;display:block;padding: 50px 25px 60px 25px;font-size: 14px;color: #becfd8;line-height: 30px;text-align: center;
+	-webkit-text-shadow:-1px -1px 0 #fff,1px 1px 0 #333,1px 1px 0 #444;
+ 	-moz-text-shadow:-1px -1px 0 #fff,1px 1px 0 #333,1px 1px 0 #444;
+ 		text-shadow:-1px -1px 0 #fff,1px 1px 0 #333,1px 1px 0 #444;
+}
+.download_box li a:hover{color: #fff8bb;}
+.download_box li a i{font-size: 18px;font-weight: bolder;font-style: normal;}
+.download_box .or_code{ width: 161px;height: 161px; color: #fff; line-height: 24px; font-size: 16px; text-align: center;  border: 2px solid #343232; background: #000; border-radius: 5px; padding: 2px; }

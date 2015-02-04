@@ -120,18 +120,15 @@ public class GameController {
     }
 
     @RequestMapping(value = "/playpage", method = RequestMethod.GET)
-    public String playpage(Integer gameId, String serverId, ModelMap model) {
+    public String playpage(Integer gameId, Integer serverId, ModelMap model) {
 
-        if (serverId == null) {
-            Webgame game = gameService.findByGameId(gameId);
-            if (game == null) {
-                return "redirect:/404.html";
-            }
-            serverId = game.getDefaultServerId();
+        if (serverId == null || serverId > 1000) {
+            serverId = serverService.getNewestServerId(gameId);
         }
+        model.addAttribute("serverId", serverId);
         
         if (gameId == 20) {
-            model.addAttribute("serverId", serverId);
+            
             return "mz/play_mz";
         }
         return "redirect:/404.html";

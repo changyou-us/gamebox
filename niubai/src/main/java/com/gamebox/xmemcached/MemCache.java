@@ -24,6 +24,15 @@ public class MemCache {
 
     private Set<String> keySet = new HashSet<String>();
 
+    
+    /**
+     * @return the keySet
+     */
+    public Set<String> getKeySet() {
+    
+        return keySet;
+    }
+
     private final String name;
 
     private final int expire;
@@ -62,6 +71,7 @@ public class MemCache {
             return;
 
         try {
+           
             key = this.getKey(key);
             memcachedClient.setWithNoReply(key, expire, value);
             keySet.add(key);

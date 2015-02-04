@@ -15,8 +15,7 @@ import com.gamebox.model.OpenStatusType;
  * @version 1.0
  */
 public interface ServerService {
-
-
+    
     /**
      * 判断服务器是否存在
      * 
