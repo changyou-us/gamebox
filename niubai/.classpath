@@ -25,6 +25,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/new_gamebox_trunk/WebRoot/WEB-INF/lib/kafka_ad.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

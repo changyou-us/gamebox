@@ -1,7 +1,7 @@
 package com.gamebox.controller;
 
 import java.net.URLEncoder;
-import java.util.Enumeration;
+//import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,6 +54,7 @@ public class AuthorizationController {
     @RequestMapping("/authorization/{identifier}")
     public String authorizations(HttpServletRequest request, HttpServletResponse response, @PathVariable String identifier, String credits, ModelMap model) throws Exception{
 
+        /*
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         Enumeration<?> attributeNames = request.getParameterNames();
         
@@ -62,13 +63,14 @@ public class AuthorizationController {
             System.out.println(nextElement.toString() + ":" + request.getParameter(nextElement.toString()));
         }
         System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-        
+        */
         FacebookAppInformation facebookAppInformation = facebookAppInformationService.getFacebookAppInformation(identifier);
         String appId = facebookAppInformation.getAppId();
         Integer gameId = facebookAppInformation.getGameId();
         String signed_request = request.getParameter("signed_request"); 
         String rccId = request.getParameter("rcc_id");
-        String backUrl = "http://apps.facebook.com/" + appId + "?rcc_id="+rccId;
+        String backUrl = "https://apps.facebook.com/" + appId + "?rcc_id=" + rccId + "&credits=" + credits;
+        System.out.println(backUrl);
         String authUrl ="https://www.facebook.com/dialog/oauth?client_id=" + appId + "&redirect_uri="+URLEncoder.encode(backUrl,"UTF-8") + "&auth_type=rerequest&scope=email,user_friends";
 
         String[] sList = signed_request.split("\\.");
@@ -80,17 +82,16 @@ public class AuthorizationController {
           str = str.replace(from.charAt(i), to.charAt(i));
         }
         
-      //  list($encoded_sig, $payload) = explode('.', $signed_request, 2); 
+        // list($encoded_sig, $payload) = explode('.', $signed_request, 2); 
 
-       // $data = json_decode(base64_decode(strtr($payload, '-_', '+/')), true);
+        // $data = json_decode(base64_decode(strtr($payload, '-_', '+/')), true);
        
         String json = Base64Util.decode(str, "UTF-8");
-        System.out.println(json);
+        //System.out.println(json);
         JSONObject jsonObject = JSONObject.fromObject(json);
         String scopeId = (String)jsonObject.get("user_id");
         
         if (scopeId == null) {
-            System.out.println("11111111");
             model.addAttribute("authUrl", authUrl);
             return "/auth_fb";
         } 
@@ -98,7 +99,7 @@ public class AuthorizationController {
         String accessToken  = (String) jsonObject.get("oauth_token");
         String inspecting = WebUtils.sendGet("https://graph.facebook.com/debug_token?input_token=" + accessToken + "&access_token=" + facebookAppInformation.getAppToken(), null);
         try {
-            System.out.println(inspecting);
+            //System.out.println(inspecting);
             if (!scopeId.equals(JSONObject.fromObject(inspecting).getJSONObject("data").getString("user_id"))) {
                 return null;
             }
@@ -115,22 +116,23 @@ public class AuthorizationController {
                 //return "redirect:/ad/" + rccId + ".html";
         }
             
-        if (rccId != null) {
-            FileUtils.writeLog(request, "guanggao.log", rccId, user.getUserId());
-            return "redirect:https://" + request.getServerName() + "/ad/" + rccId + ".html";
-        }
+        
             
         setLoginInfo2Cache(user, request, response);
             //return "redirect:/ad/" + rccId + ".html";
         
-        
+        if (rccId != null) {
+            FileUtils.writeLog(request, "guanggao.log", rccId, user.getUserId());
+            return "redirect:https://" + request.getServerName() + "/ad/" + rccId + ".html";
+        }
         List<Server> serverList = serverService.findByGameId(facebookAppInformation.getGameId(), true);
         
         model.addAttribute("serverList", serverList);
         model.addAttribute("identifier", identifier);
         model.addAttribute("appId", appId);
         model.addAttribute("gameId", gameId);
-        if (credits != null) {
+        System.out.println(credits);
+        if ("1".equals(credits)) {
             
             List<GamePaymentTypePrice> priceList = gamePaymentTypePriceService.findByGameIdAndPaymentTypeId(gameId, 8);
             model.addAttribute("priceList", priceList);

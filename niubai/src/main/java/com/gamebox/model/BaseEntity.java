@@ -19,8 +19,6 @@ package com.gamebox.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.validation.groups.Default;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;

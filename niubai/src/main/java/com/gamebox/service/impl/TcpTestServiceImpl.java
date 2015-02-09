@@ -6,11 +6,9 @@ package com.gamebox.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.gamebox.dao.DirectPaymentOrderDao;
@@ -22,11 +20,9 @@ import com.gamebox.dao.LoginGameHistoryDao;
 import com.gamebox.dao.ServerDao;
 import com.gamebox.dao.TcpTestDao;
 import com.gamebox.dao.UsersDao;
-import com.gamebox.model.DirectPaymentOrder;
-import com.gamebox.model.DisplayType;
-import com.gamebox.model.FacebookUserBusiness;
-import com.gamebox.model.OpenStatusType;
 import com.gamebox.model.TcpTest;
+import com.gamebox.model.Users;
+import com.gamebox.service.ServerService;
 import com.gamebox.service.TcpTestService;
 
 /**
@@ -35,7 +31,7 @@ import com.gamebox.service.TcpTestService;
  */
 @Service
 public class TcpTestServiceImpl implements TcpTestService {
-
+    
     @Autowired
     private DirectPaymentOrderDao directPaymentOrderDao;
     
@@ -62,10 +58,12 @@ public class TcpTestServiceImpl implements TcpTestService {
     
     @Autowired
     private TcpTestDao tcpTestDao;
+    
+    @Autowired
+    private ServerService serverService;
 
     
 
-    @Cacheable(value = "test")
     public List<TcpTest> getAll() {
 
         return tcpTestDao.getAll();
@@ -79,24 +77,14 @@ public class TcpTestServiceImpl implements TcpTestService {
 
     @Override
     public void test() {
-
-        System.out.println(serverDao.serverExists(1, 14, OpenStatusType.able, DisplayType.display));
+        
+        List<String> emailsList = new ArrayList<String>();
+        emailsList.add("maomi");
+        emailsList.add("wahahaha");
+        Users user = usersDao.findUserByEmailsList(emailsList);
+        System.out.println(user.getUserId());
     }
 
-    @Override
-    @Cacheable("ksd")
-    public String cache() {
-
-        // TODO Auto-generated method stub
-        return UUID.randomUUID().toString();
-    }
     
-    @Override
-    @Cacheable("frank")
-    public String cache1() {
-
-        // TODO Auto-generated method stub
-        return UUID.randomUUID().toString();
-    }
 
 }

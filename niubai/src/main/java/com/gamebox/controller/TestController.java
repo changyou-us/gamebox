@@ -1,6 +1,5 @@
 package com.gamebox.controller;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -60,9 +59,6 @@ public class TestController {
     @RequestMapping(value = "/ksd", method = RequestMethod.GET)
     @ResponseBody
     public String ksd() {
-
-        System.out.println(testService.cache());
-        System.out.println(testService.cache1());
         return "OK";
     }
     
@@ -70,7 +66,7 @@ public class TestController {
     @ResponseBody
     public String evict() {
 
-        String[] arrays = {"ksd","frank"};
+        String[] arrays = {"FacebookAppInformationFindByGameId","FacebookAppInformationFindByGameName","server"};
         
         for (String s : arrays) {
             memcachedCacheManager.getCache(s).clear();

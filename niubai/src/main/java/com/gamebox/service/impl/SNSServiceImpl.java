@@ -71,7 +71,6 @@ public class SNSServiceImpl implements SNSService {
     public Users getExistFacebookUser(String scopeId, String appId, String accessToken) {
         Date date = new Date();
         Users users = null;
-        String email = scopeId + "@facebook.com";
 
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("access_token", accessToken);
@@ -84,6 +83,7 @@ public class SNSServiceImpl implements SNSService {
         FacebookUserBusiness facebookUserBusiness = facebookUserBusinessDao.findBusinessByScopeId(scopeId);
         JSONObject jo = null;
         List<String> list = new ArrayList<String>();
+        List<String> emailsList = new ArrayList<String>();
         if (facebookUserBusiness == null) {
             System.out.println("for");
             for (int i = 0; i < array.size(); i++) {
@@ -91,11 +91,12 @@ public class SNSServiceImpl implements SNSService {
                 System.out.println(jo.get("id"));
                 String iteratorScopeId = jo.getString("id");
                 list.add(iteratorScopeId);
+                emailsList.add(iteratorScopeId + "@facebook.com");
             }
             
             facebookUserBusiness  = facebookUserBusinessDao.findBusinessByScopeIdList(list);
             if (facebookUserBusiness == null) {
-                users = usersDao.findUserByEmail(email);
+                users = usersDao.findUserByEmailsList(emailsList);
                 if (users != null) {// 其实这种情况不应该出现，不过因为平台移植还是要更新
                     facebookUserBusiness = new FacebookUserBusiness();
                     facebookUserBusiness.setAppId(appId);
@@ -133,8 +134,8 @@ public class SNSServiceImpl implements SNSService {
         String regIp = HttpUtils.getIp(request);
         newUsers.setRegIp(regIp);
         newUsers.setSalt(ValidateUtils.getRandStr(6, false));
-        String encodePassword = Md5Token.getInstance().getGameboxPassword(
-                newUsers.getPassword(), newUsers.getSalt());
+        String encodePassword = Md5Token.getInstance().getGameboxPassword(newUsers.getPassword(), newUsers.getSalt());
+        
         newUsers.setPassword(encodePassword);
         newUsers.setRegCountry(CountryUtils.getCountry(regIp));
         newUsers.setRegTime(DateUtils.getCurrentTime());

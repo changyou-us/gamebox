@@ -10,16 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.converter.json.JacksonObjectMapperFactoryBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.deser.std.JacksonDeserializers;
 import com.gamebox.model.DirectPaymentOrder;
 import com.gamebox.model.GamePaymentTypePrice;
 import com.gamebox.model.OrderStatus;
@@ -41,8 +37,6 @@ public class DynamicPriceController {
     private static final String STATUS = "status";
 
     private static final String OK = "1";
-
-    private static final String ERROR = "0";
 
     private static final String NOT_LOGIN = "-1";
     

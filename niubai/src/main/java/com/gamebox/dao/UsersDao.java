@@ -4,6 +4,10 @@
  */
 package com.gamebox.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.gamebox.model.Users;
 
 /**
@@ -17,4 +21,6 @@ public interface UsersDao {
     Users findUserByUserId(String userId);
 
     Users findUserByEmail(String email);
+
+    Users findUserByEmailsList(@Param("emailsList") List<String> emailsList);
 }

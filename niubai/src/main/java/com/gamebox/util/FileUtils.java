@@ -240,7 +240,7 @@ public class FileUtils {
 	                iaddress = ias.nextElement();
 	            } while(!(iaddress instanceof Inet4Address));
 
-	            return iaddress.getHostAddress().replace("10.0.0.", "");
+	            return iaddress.getHostAddress().replace("10.0.1.", "");
 	        }
 	    } catch (Exception e) {
             e.printStackTrace();

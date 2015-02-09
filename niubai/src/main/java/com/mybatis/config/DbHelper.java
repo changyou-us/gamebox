@@ -8,8 +8,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
-import com.gamebox.dao.GamePaymentTypePriceDao;
-
 public class DbHelper {
     private static DbHelper dbHelper=null;
     private static SqlSessionFactory sqlSessionFactory=null;

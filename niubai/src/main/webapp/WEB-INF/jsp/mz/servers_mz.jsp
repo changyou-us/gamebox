@@ -16,7 +16,7 @@
         </div>-->
 		<div class="nav">			
 			<a href="" class="fanpage">fanpage</a>
-			<a href="https://apps.facebook.com/623156901163938?credits=1" target="_blank" class="recharge">RECHARGE</a>
+			<a href="https://apps.facebook.com/623156901163938/?credits=1" target="_blank" class="recharge">RECHARGE</a>
 		</div>
 		<!-- nav end -->
 		<div class="main tabContents_1">

@@ -45,4 +45,12 @@
   	where email = #{email,jdbcType=VARCHAR} 
   </select>
   
+  <select id="findUserByEmailsList" resultMap="usersMap">
+  	<foreach collection="emailsList" item="item" index="index" separator="union"> 
+		select * from gamebox_users
+  	    where email = #{item,jdbcType=VARCHAR}
+	</foreach>
+	order by user_id limit 1
+  </select>
+  
 </mapper>

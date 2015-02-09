@@ -1,7 +1,12 @@
 package com.gamebox.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.ibatis.session.SqlSession;
@@ -16,10 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.gamebox.dao.GamePaymentTypePriceDao;
-import com.gamebox.model.GamePaymentTypePrice;
 import com.gamebox.util.DateUtils;
-import com.mybatis.config.DbHelper;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;  
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;  
@@ -46,8 +48,11 @@ public class JamesTest {
         this.mockMvc = webAppContextSetup(this.wac).build();  
     }  
       
+    @Test
     public void test() throws Exception {  
-        mockMvc.perform(get("/test/save"));  
+        mockMvc.perform(get("/test/all"));  
+        mockMvc.perform(get("/test/all"));  
+        //mockMvc.perform(get("/test/ksd"));  
     } 
     
     public void game() throws Exception {  
@@ -66,10 +71,41 @@ public class JamesTest {
         String url = "http://mf-test.gamebox.com/mzpay/enpay?addcoin=&Uname=" + Uname + "&GameId=" + GameId+ "&Money=" + money + "&ServiceId=" + ServerId + "&RoleId=" + RoleId + "&Transactionid=" + ordersn + "&Depay=&gDepay=&Sign=" + sign; 
         System.out.println(url);
         System.out.println("http://mf-test.gamebox.com/mzpay/enpay?addcoin=&Uname=5037&GameId=20&Money=100&ServiceId=S0&RoleId=1000006&Transactionid=01901b1dac684e4e9709a094420fa7dc&Depay=&gDepay=&Sign=214a12c99bee496ac3d3847fa28ea0a9");
-    } 
+    }
     
     @Test
-    public void made() {
+    public void made() throws Exception {
+        
+        String account = "1";
+        String sid = "1";
+        String time = DateUtils.getCurrentTime().toString();
+        String helpUrl = URLEncoder.encode("http://forum.gamebox.com/index.jsp?gid=149","UTF-8");
+        String forumUrl = URLEncoder.encode("http://forum.gamebox.com/index.jsp?gid=149","UTF-8");
+        String favoriteUrl = URLEncoder.encode("http://idle.gamebox.com/crd.jsp","UTF-8");
+        String payUrl = URLEncoder.encode("http://idle.gamebox.com/recharge.jsp?ac=cr","UTF-8");
+        String key = "16de79150b90647d1d97aa7e18c2f809";
+        
+        
+        
+        Map<String, String> paramMap = new TreeMap<String, String>();
+        paramMap.put("account", account);
+        paramMap.put("sid", "s"+sid);
+        paramMap.put("time", time);
+        paramMap.put("helpUrl", helpUrl);
+        paramMap.put("forumUrl", forumUrl);
+        paramMap.put("favoriteUrl", favoriteUrl);
+        paramMap.put("payUrl", payUrl);
+        
+        String urlParams = "";
+        for(Entry<String, String> e : paramMap.entrySet()){
+            urlParams += e.getKey() + "=" + e.getValue() + "&";
+        }
+        urlParams = urlParams.substring(0, urlParams.length()-1);
+        String sign = DigestUtils.md5Hex(urlParams + key);
+        String url = "http://tt-test.gamebox.com/index.php?" + urlParams + "&sign=" + sign;
+        System.out.println(url);
+        
+        /*
         try {
             mockMvc.perform(get("/test/ksd"));
             //mockMvc.perform(get("/test/evict"));
@@ -79,7 +115,7 @@ public class JamesTest {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }  
-        /*
+        
         SqlSession session = DbHelper.getInstance().getSqlSession();
         GamePaymentTypePriceDao gamePaymentTypePriceService = session.getMapper(GamePaymentTypePriceDao.class);
         

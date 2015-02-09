@@ -19,8 +19,4 @@ public interface TcpTestService {
     List<TcpTest> getAll();
 
     void updateById(TcpTest test);
-    
-    String cache();
-    
-    String cache1();
 }

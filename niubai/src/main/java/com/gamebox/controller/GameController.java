@@ -1,5 +1,6 @@
 package com.gamebox.controller;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,18 +16,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.gamebox.model.FacebookAppInformation;
 import com.gamebox.model.LoginGameHistory;
 import com.gamebox.model.Server;
 import com.gamebox.model.DisplayType;
 import com.gamebox.model.Users;
-import com.gamebox.model.Webgame;
 import com.gamebox.model.OpenStatusType;
+import com.gamebox.service.FacebookAppInformationService;
 import com.gamebox.service.GameService;
 import com.gamebox.service.LoginGameHistoryService;
 import com.gamebox.service.ServerService;
 import com.gamebox.util.DateUtils;
 import com.gamebox.util.HttpUtils;
-import com.gamebox.util.ValidateUtils;
 import com.gamebox.util.WebUtils;
 
 /**
@@ -57,25 +58,38 @@ public class GameController {
 
     @Autowired
     private LoginGameHistoryService loginGameHistoryService;
+    
+    @Autowired
+    private FacebookAppInformationService facebookAppInformationService;
 
     @RequestMapping(value = "/login")
     @ResponseBody
-    public Map<String, String> login(String gameId, String serverId, HttpServletRequest request,
+    public Map<String, String> login(Integer gameId, Integer serverId, HttpServletRequest request,
             HttpServletResponse response) {
 
-        Map<String, String> resultMap = new HashMap<String, String>();
-        if (StringUtils.isBlank(gameId) || StringUtils.isBlank(serverId)
-                || !(ValidateUtils.isPositiveInt(gameId) && ValidateUtils.isPositiveInt(serverId))) {
-            resultMap.put("result", LOGIN_PARAM_FAILURE);
-            return resultMap;
+        Users users = (Users) request.getSession().getAttribute(WebUtils.USER);
+        if (users == null) {
+            try {
+                FacebookAppInformation facebookAppInformation = facebookAppInformationService.getFacebookAppInformation(gameId);
+                String appId = facebookAppInformation.getAppId();
+                String appUrl = "https://apps.facebook.com/" + appId + "/";
+                response.sendRedirect(appUrl);
+                return null;
+            }
+            catch (IOException e) {
+               e.printStackTrace();
+               return null;
+            } 
         }
+        
+        Map<String, String> resultMap = new HashMap<String, String>();
         Integer sid = null;
-        Integer gid = Integer.parseInt(gameId);
+        Integer gid = gameId;
         if ("10000000".equals(serverId)) {
             sid = serverService.getNewestServerId(gid);
         }
         else {
-            sid = Integer.parseInt(serverId);
+            sid = serverId;
         }
         if (!serverService.serverExists(sid, gid, OpenStatusType.able, DisplayType.display)) {
             resultMap.put("result", LOGIN_SERVER_FAILURE);
@@ -99,7 +113,7 @@ public class GameController {
         resultMap.put("url", url);
         resultMap.put("name", serverService.findServerByGidAndSid(gid, sid).getName());
         resultMap.put("timezone", serverService.findServerByGidAndSid(gid, sid).getTimezone().name());
-        WebUtils.addCookie(request, response, "latestGame_" + gameId + "_" + user.getUserId(), serverId, WebUtils.COOKIE_AGE);
+        WebUtils.addCookie(request, response, "latestGame_" + gameId + "_" + user.getUserId(), serverId.toString(), WebUtils.COOKIE_AGE);
         // 向loginGameHistory表中插入数据,向userPlayInfo表中插入数据
         
         Date date = new Date();
@@ -130,6 +144,8 @@ public class GameController {
         if (gameId == 20) {
             
             return "mz/play_mz";
+        } else if (gameId == 21) {
+            return "tt/play_tt";
         }
         return "redirect:/404.html";
     }

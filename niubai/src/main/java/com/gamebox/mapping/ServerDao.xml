@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.gamebox.dao.ServerDao">
-  
+  <cache
+        eviction="FIFO"
+        flushInterval="60000"
+        size="512"
+        readOnly="true" />
   
   <resultMap id="serverMap" type="com.gamebox.model.Server" >
     <id column="id" property="id" jdbcType="INTEGER" />
@@ -55,8 +59,8 @@
   		  g.open_status = #{openStatus,jdbcType=INTEGER} limit 1  
   </select>
   
-  <select id="getNewestServerId" resultMap="serverMap" parameterType="java.lang.Integer">
-  	select * from gamebox_server
+  <select id="getNewestServerId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+  	select server_id from gamebox_server
   	<![CDATA[ where game_id = #{gameId,jdbcType=VARCHAR} and server_id < 1000 order by server_id desc limit 1 ]]>
   </select>
   

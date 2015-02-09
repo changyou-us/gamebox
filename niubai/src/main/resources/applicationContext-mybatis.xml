@@ -10,7 +10,7 @@
 	http://www.springframework.org/schema/aop 
     http://www.springframework.org/schema/aop/spring-aop-3.2.xsd"
 	default-lazy-init="true">
-
+	
 	<context:property-placeholder location="classpath*:/gamebox.properties" ignore-resource-not-found="true" ignore-unresolvable="true" />
 <!-- 配置数据源 -->
 	<bean name="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
@@ -99,6 +99,7 @@
 		<aop:advisor pointcut-ref="transactionPointcut" advice-ref="transactionAdvice" />
 	</aop:config>
 
+	<aop:aspectj-autoproxy expose-proxy="true"/>
 
 	<!-- 配置druid监控spring jdbc -->
 	<bean id="druid-stat-interceptor" class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor">

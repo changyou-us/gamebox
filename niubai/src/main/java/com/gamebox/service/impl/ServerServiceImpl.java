@@ -48,9 +48,6 @@ public class ServerServiceImpl implements ServerService{
 
     public static final String RECOMMENDED_TYPE = "recommended";
 
-    // 特殊游戏ID 5 - Wartune
-    private static final String LOGIN_GAME_WARTUNE = "5";
-
     // 占位符，替换成serverId
     private static final String LOGIN_GAME_SERVERID_STRING = "$(sid)";
 
@@ -136,6 +133,11 @@ public class ServerServiceImpl implements ServerService{
         if (playerId == null) {
             return null;
         }
+        
+        String url = specialGamesBuildUrl(gameId, serverId, playerId);
+        if (url != null) {
+            return url;
+        }
         // 2.解析loginSecret
         String loginSecret = server.getLoginSecret();
         // 合服后是否启用transferedId
@@ -161,6 +163,50 @@ public class ServerServiceImpl implements ServerService{
         // 5.解析loginUrl
         return replaceUrl(server.getLoginUrl(), sid.toString(), showId, playerId, randId, time, server.getPublicKey(),
                 oauth, "", user.getNickname(), "");
+    }
+
+    private String specialGamesBuildUrl(Integer gameId, Integer serverId, String playerId) {
+
+        try {
+            if (gameId == 21) {
+                Server server = serverDao.findServerByGidAndSid(gameId, serverId);
+                String account = playerId;
+                String sid = serverId.toString();
+                String time = DateUtils.getCurrentTime().toString();
+                String helpUrl = URLEncoder.encode("https://www.facebook.com/tidaltrekofficial", "UTF-8");
+                String forumUrl = URLEncoder.encode("https://www.facebook.com/tidaltrekofficial", "UTF-8");
+                String favoriteUrl = URLEncoder.encode("https://www.facebook.com/tidaltrekofficial", "UTF-8");
+                String payUrl = URLEncoder.encode("https://apps.facebook.com/tidal-trek/?credits=1", "UTF-8");
+                String key = server.getPublicKey();
+
+                Map<String, String> paramMap = new TreeMap<String, String>();
+                paramMap.put("account", account);
+                paramMap.put("sid", "s" + sid);
+                paramMap.put("time", time);
+                paramMap.put("helpUrl", helpUrl);
+                paramMap.put("forumUrl", forumUrl);
+                paramMap.put("favoriteUrl", favoriteUrl);
+                paramMap.put("payUrl", payUrl);
+
+                String urlParams = "";
+                for (Entry<String, String> e : paramMap.entrySet()) {
+                    urlParams += e.getKey() + "=" + e.getValue() + "&";
+                }
+                urlParams = urlParams.substring(0, urlParams.length() - 1);
+                String sign = DigestUtils.md5Hex(urlParams + key);
+                String url = "https://tt-test.gamebox.com/index.php?" + urlParams + "&sign=" + sign;
+
+                return url;
+            }
+            else {
+                return null;
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     private boolean verify(String string, String string2, String playerId, String randId, String time, String oauth,
@@ -415,6 +461,7 @@ public class ServerServiceImpl implements ServerService{
     public Integer getNewestServerId(Integer gameId){
         return serverDao.getNewestServerId(gameId);
     }
+
 
 
 }
