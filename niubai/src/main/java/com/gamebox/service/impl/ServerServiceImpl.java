@@ -39,8 +39,8 @@ import com.gamebox.util.WebUtils;
  * Service - 管理员
  * 
  * @author Dick niu
- * @version 1.0
- */
+ * @version 1.0a
+ */ 
 @Service
 public class ServerServiceImpl implements ServerService{
 
@@ -403,9 +403,9 @@ public class ServerServiceImpl implements ServerService{
         try {
             roleName = URLEncoder.encode(roleName, "UTF-8");
         }
-        catch (UnsupportedEncodingException e) {
+        catch (Exception e) {
             e.printStackTrace();
-            return 0;
+            roleName = "NULL";
         }
         if (gameId != 18) {
             secret = secret.replace("(key)", key).replace("(sid)", sid).replace("(showid)", showId)
