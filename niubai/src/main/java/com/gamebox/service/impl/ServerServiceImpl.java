@@ -39,8 +39,8 @@ import com.gamebox.util.WebUtils;
  * Service - 管理员
  * 
  * @author Dick niu
- * @version 1.0
- */
+ * @version 1.0a
+ */ 
 @Service
 public class ServerServiceImpl implements ServerService{
 
