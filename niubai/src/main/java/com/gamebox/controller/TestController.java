@@ -36,6 +36,7 @@ public class TestController {
     @RequestMapping(value = "/baidu", method = RequestMethod.GET)
     public String baidu(HttpServletRequest request, ModelMap model) {
         
+        //TEST
         return "/auth_fb";
     }
     
