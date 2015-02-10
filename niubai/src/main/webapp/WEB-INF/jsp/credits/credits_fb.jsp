@@ -50,7 +50,7 @@ function placeOrder(amount, currency) {
 </head>
 <body>
 <div class="container">
-	<a href="javascript:void(0);" class="oqlogo" onclick="return false;"><img src="/images/${identifier}.jpg" width="69" height="58" alt="odin quest" /></a>
+	<a href="javascript:void(0);" class="oqlogo" onclick="return false;"><img src="/images/${identifier}.jpg" width="69" height="58" alt="gamebox_fb_credits" /></a>
     <div class="select_server">
     	<label class="lab">Game Server :</label>
         <select class="sel" id="GameServer" name="GameServer">

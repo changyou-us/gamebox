@@ -403,9 +403,9 @@ public class ServerServiceImpl implements ServerService{
         try {
             roleName = URLEncoder.encode(roleName, "UTF-8");
         }
-        catch (UnsupportedEncodingException e) {
+        catch (Exception e) {
             e.printStackTrace();
-            return 0;
+            roleName = "NULL";
         }
         if (gameId != 18) {
             secret = secret.replace("(key)", key).replace("(sid)", sid).replace("(showid)", showId)
