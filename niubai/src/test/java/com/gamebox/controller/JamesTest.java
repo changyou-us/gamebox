@@ -41,7 +41,7 @@ public class JamesTest {
     @Before  
     public void setup() {  
         // webAppContextSetup 注意上面的static import  
-        // webAppContextSetup 构造的WEB容器可以添加fileter 但是不能添加listenCLASS
+        // webAppContextSetup 构造的WEB容器可以添加fileter 但是不能添加listenCLASS1
         //TEST
          WebApplicationContext context =  
          ContextLoader.getCurrentWebApplicationContext();  
