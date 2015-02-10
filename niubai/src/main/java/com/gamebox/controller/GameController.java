@@ -136,17 +136,17 @@ public class GameController {
     @RequestMapping(value = "/playpage", method = RequestMethod.GET)
     public String playpage(Integer gameId, Integer serverId, ModelMap model) {
 
-        if (serverId == null || serverId > 1000) {
+        
+        if (serverId == null || serverId > 1000) { // 这就走最新服
             serverId = serverService.getNewestServerId(gameId);
         }
         model.addAttribute("serverId", serverId);
         
-        if (gameId == 20) {
-            
-            return "mz/play_mz";
-        } else if (gameId == 21) {
-            return "tt/play_tt";
-        }
-        return "redirect:/404.html";
+        FacebookAppInformation facebookAppInformation = facebookAppInformationService.getFacebookAppInformation(gameId);
+        
+        String identifier = facebookAppInformation.getGameName();
+        
+        return identifier + "/play_" + identifier;
+       
     }
 }

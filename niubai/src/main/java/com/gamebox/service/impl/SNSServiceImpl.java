@@ -101,7 +101,7 @@ public class SNSServiceImpl implements SNSService {
                     facebookUserBusiness = new FacebookUserBusiness();
                     facebookUserBusiness.setAppId(appId);
                     facebookUserBusiness.setScopeId(scopeId);
-                    facebookUserBusiness.setUserId(users.getUserId().toString());
+                    facebookUserBusiness.setUserId(users.getUserId());
                     facebookUserBusiness.setCreateDate(date);
                     facebookUserBusiness.setModifyDate(date);
                     facebookUserBusinessDao.insert(facebookUserBusiness);
@@ -115,10 +115,10 @@ public class SNSServiceImpl implements SNSService {
                 newFacebookUserBusiness.setModifyDate(date);
                 facebookUserBusinessDao.insert(newFacebookUserBusiness);
                 
-                users = usersDao.findUserByUserId(facebookUserBusiness.getUserId());
+                users = usersDao.findUserByUserId(facebookUserBusiness.getUserId().toString());
             }
         } else {
-            users = usersDao.findUserByUserId(facebookUserBusiness.getUserId());
+            users = usersDao.findUserByUserId(facebookUserBusiness.getUserId().toString());
         }
         
         return users;
@@ -148,7 +148,7 @@ public class SNSServiceImpl implements SNSService {
         FacebookUserBusiness facebookUserBusiness = new FacebookUserBusiness();
         facebookUserBusiness.setAppId(appId);
         facebookUserBusiness.setScopeId(scopeId);
-        facebookUserBusiness.setUserId(newUsers.getUserId().toString());
+        facebookUserBusiness.setUserId(newUsers.getUserId());
         facebookUserBusinessDao.insert(facebookUserBusiness);
         return newUsers;
     }

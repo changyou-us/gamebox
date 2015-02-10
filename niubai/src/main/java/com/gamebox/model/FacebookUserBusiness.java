@@ -17,7 +17,7 @@ public class FacebookUserBusiness extends BaseEntity implements Serializable {
 
     private String scopeId;
 
-    private String userId;
+    private Integer userId;
 
     /**
      * @return the appId
@@ -53,12 +53,12 @@ public class FacebookUserBusiness extends BaseEntity implements Serializable {
         return scopeId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Integer userId) {
 
         this.userId = userId;
     }
 
-    public String getUserId() {
+    public Integer getUserId() {
 
         return userId;
     }
