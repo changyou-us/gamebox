@@ -1,6 +1,5 @@
 package com.gamebox.service.impl;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -181,7 +180,7 @@ public class ServerServiceImpl implements ServerService{
 
                 Map<String, String> paramMap = new TreeMap<String, String>();
                 paramMap.put("account", account);
-                paramMap.put("sid", "s" + sid);
+                paramMap.put("sid", sid);
                 paramMap.put("time", time);
                 paramMap.put("helpUrl", helpUrl);
                 paramMap.put("forumUrl", forumUrl);
