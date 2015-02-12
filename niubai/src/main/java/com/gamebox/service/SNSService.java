@@ -13,5 +13,5 @@ public interface SNSService {
     
     Users saveFacebookUser(String scopeId, String appId, HttpServletRequest request);
 
-
+    void deleteByUserId(Integer userId);
 }

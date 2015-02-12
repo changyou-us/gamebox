@@ -35,6 +35,11 @@
       )
   </insert>
   
+  <delete id="deleteByUserId" parameterType="java.lang.Integer" >
+    delete from gamebox_users 
+    where user_id = #{userId}
+  </delete>
+  
   <select id="findUserByUserId" resultMap="usersMap" parameterType="java.lang.String">
   	select * from gamebox_users
   	where user_id = #{userId,jdbcType=INTEGER} 

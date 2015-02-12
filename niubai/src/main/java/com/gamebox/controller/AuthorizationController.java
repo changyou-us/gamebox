@@ -1,12 +1,16 @@
 package com.gamebox.controller;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
 //import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.gamebox.model.FacebookAppInformation;
+import com.gamebox.model.FacebookUserBusiness;
 import com.gamebox.model.GamePaymentTypePrice;
 import com.gamebox.model.Server;
 import com.gamebox.model.Users;
@@ -131,7 +136,7 @@ public class AuthorizationController {
         model.addAttribute("identifier", identifier);
         model.addAttribute("appId", appId);
         model.addAttribute("gameId", gameId);
-        System.out.println(credits);
+        //System.out.println(credits);
         if ("1".equals(credits)) {
             
             List<GamePaymentTypePrice> priceList = gamePaymentTypePriceService.findByGameIdAndPaymentTypeId(gameId, 8);
@@ -142,6 +147,26 @@ public class AuthorizationController {
         return "/" + identifier + "/servers_" + identifier;
     }
     
+    @RequestMapping("/delete")
+    public String delete(HttpServletRequest request, HttpServletResponse response, String deleteStatus, ModelMap model) throws Exception{
+
+        Users users = (Users) request.getSession().getAttribute(WebUtils.USER);
+        if (users == null) {
+            model.addAttribute("userId", "not login");
+        } else {
+            
+            Integer userId = users.getUserId();
+            
+            if ("1".equals(deleteStatus)) {
+                snsService.deleteByUserId(userId);
+                model.addAttribute("userId", "deleted");
+            } else {
+                model.addAttribute("userId", userId);
+            }
+        }
+        
+        return "/delete_fb";
+    }
     
     private void setLoginInfo2Cache(Users user, HttpServletRequest request,
             HttpServletResponse response) {

@@ -27,6 +27,12 @@
     		#{modifyDate,jdbcType=INTEGER}
       )
   </insert>
+  
+  <delete id="deleteByUserId" parameterType="java.lang.Integer" >
+    delete from gamebox_facebook_user_business 
+    where user_id = #{userId}
+  </delete>
+  
   <select id="findBusinessByScopeId" resultMap="facebookUserBusinessMap" parameterType="java.lang.String">
   	select * from gamebox_facebook_user_business
   	where scope_id = #{scopeId,jdbcType=VARCHAR}

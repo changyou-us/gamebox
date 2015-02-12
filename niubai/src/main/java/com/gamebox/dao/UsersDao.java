@@ -23,4 +23,6 @@ public interface UsersDao {
     Users findUserByEmail(String email);
 
     Users findUserByEmailsList(@Param("emailsList") List<String> emailsList);
+
+    void deleteByUserId(Integer userId);
 }

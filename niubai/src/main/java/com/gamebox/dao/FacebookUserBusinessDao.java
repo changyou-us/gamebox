@@ -11,5 +11,7 @@ public interface FacebookUserBusinessDao {
     public void insert(FacebookUserBusiness facebookUserBusiness);
 
     public FacebookUserBusiness findBusinessByScopeIdList(List<String> list);
+
+    public void deleteByUserId(Integer userId);
     
 }

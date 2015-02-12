@@ -93,7 +93,7 @@ public class SNSServiceImpl implements SNSService {
                 list.add(iteratorScopeId);
                 emailsList.add(iteratorScopeId + "@facebook.com");
             }
-            
+            System.out.println("end");
             facebookUserBusiness  = facebookUserBusinessDao.findBusinessByScopeIdList(list);
             if (facebookUserBusiness == null) {
                 users = usersDao.findUserByEmailsList(emailsList);
@@ -127,6 +127,7 @@ public class SNSServiceImpl implements SNSService {
     @Override
     public Users saveFacebookUser(String scopeId, String appId, HttpServletRequest request) {
 
+        Date date = new Date();
         Users newUsers = new Users();
         newUsers.setEmail(scopeId + "@facebook.com");
         newUsers.setAccountType(AccountType.facebook);
@@ -149,8 +150,17 @@ public class SNSServiceImpl implements SNSService {
         facebookUserBusiness.setAppId(appId);
         facebookUserBusiness.setScopeId(scopeId);
         facebookUserBusiness.setUserId(newUsers.getUserId());
+        facebookUserBusiness.setCreateDate(date);
+        facebookUserBusiness.setModifyDate(date);
         facebookUserBusinessDao.insert(facebookUserBusiness);
         return newUsers;
+    }
+
+    @Override
+    public void deleteByUserId(Integer userId) {
+
+        usersDao.deleteByUserId(userId);
+        facebookUserBusinessDao.deleteByUserId(userId);
     }
 
 }
