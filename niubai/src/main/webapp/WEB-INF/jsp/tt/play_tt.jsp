@@ -28,5 +28,6 @@ $(function() {
 	});
 })
 </script>
+<%@ include file="../google_tag_manager.jsp" %> 
 </body>
 </html>

@@ -128,7 +128,7 @@ public class AuthorizationController {
             //return "redirect:/ad/" + rccId + ".html";
         
         if (rccId != null) {
-            FileUtils.writeLog(request, "guanggao.log", rccId, user.getUserId());
+            FileUtils.writeLog(request, "guanggao", rccId, user.getUserId());
             return "redirect:https://" + request.getServerName() + "/ad/" + rccId + ".html";
         }
         List<Server> serverList = serverService.findByGameId(facebookAppInformation.getGameId(), true);
