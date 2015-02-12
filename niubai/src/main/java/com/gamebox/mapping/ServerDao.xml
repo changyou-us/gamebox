@@ -61,7 +61,7 @@
   
   <select id="getNewestServerId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
   	select server_id from gamebox_server
-  	<![CDATA[ where game_id = #{gameId,jdbcType=VARCHAR} and server_id < 1000 order by server_id desc limit 1 ]]>
+  	<![CDATA[ where game_id = #{gameId,jdbcType=VARCHAR} and server_id < 1000 and display = 1 order by server_id desc limit 1 ]]>
   </select>
   
 </mapper>
