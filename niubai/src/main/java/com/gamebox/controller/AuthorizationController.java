@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -148,9 +149,9 @@ public class AuthorizationController {
     }
     
     @RequestMapping("/delete")
-    public String delete(HttpServletRequest request, HttpServletResponse response, String deleteStatus, ModelMap model) throws Exception{
+    public String delete(HttpSession session, String deleteStatus, ModelMap model) throws Exception{
 
-        Users users = (Users) request.getSession().getAttribute(WebUtils.USER);
+        Users users = (Users) session.getAttribute(WebUtils.USER);
         if (users == null) {
             model.addAttribute("userId", "not login");
         } else {
@@ -159,6 +160,7 @@ public class AuthorizationController {
             
             if ("1".equals(deleteStatus)) {
                 snsService.deleteByUserId(userId);
+                session.removeAttribute(WebUtils.USER);
                 model.addAttribute("userId", "deleted");
             } else {
                 model.addAttribute("userId", userId);
