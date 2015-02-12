@@ -75,7 +75,7 @@ public class AuthorizationController {
         Integer gameId = facebookAppInformation.getGameId();
         String signed_request = request.getParameter("signed_request"); 
         String rccId = request.getParameter("rcc_id");
-        String backUrl = "https://apps.facebook.com/" + appId + "?rcc_id=" + rccId + "&credits=" + credits;
+        String backUrl = "https://apps.facebook.com/" + appId + "/?rcc_id=" + rccId + "&credits=" + credits;
         System.out.println(backUrl);
         String authUrl ="https://www.facebook.com/dialog/oauth?client_id=" + appId + "&redirect_uri="+URLEncoder.encode(backUrl,"UTF-8") + "&auth_type=rerequest&scope=email,user_friends";
 
