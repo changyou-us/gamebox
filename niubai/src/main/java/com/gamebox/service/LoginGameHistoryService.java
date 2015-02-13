@@ -15,4 +15,6 @@ import com.gamebox.model.LoginGameHistory;
 public interface LoginGameHistoryService {
     
     public void save(LoginGameHistory loginGameHistory);
+    
+    public int findByUserIdAndGameId(Integer userId, Integer gameId);
 }

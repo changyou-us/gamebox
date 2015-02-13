@@ -4,7 +4,9 @@ import com.gamebox.model.FacebookAppInformation;
 
 public interface FacebookAppInformationService {
     
-    public FacebookAppInformation getFacebookAppInformation(Integer gameId);
+    public FacebookAppInformation findByGameId(Integer gameId);
     
-    public FacebookAppInformation getFacebookAppInformation(String gamename);
+    public FacebookAppInformation findByGameName(String gamename);
+    
+    public FacebookAppInformation findByIdentifier(String gamename);
 }

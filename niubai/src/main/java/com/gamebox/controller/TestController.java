@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gamebox.model.TcpTest;
 import com.gamebox.service.GamePaymentTypePriceService;
+import com.gamebox.service.LoginGameHistoryService;
 import com.gamebox.service.TcpTestService;
 import com.gamebox.service.UsersService;
 import com.gamebox.xmemcached.MemcachedCacheManager;
@@ -32,6 +33,9 @@ public class TestController {
     
     @Autowired
     private GamePaymentTypePriceService gamePaymentTypePriceService;
+    
+    @Autowired
+    private LoginGameHistoryService loginGameHistoryService;
 
     @RequestMapping(value = "/baidu", method = RequestMethod.GET)
     public String baidu(HttpServletRequest request, ModelMap model) {
@@ -60,6 +64,8 @@ public class TestController {
     @RequestMapping(value = "/ksd", method = RequestMethod.GET)
     @ResponseBody
     public String ksd() {
+        System.out.println(loginGameHistoryService.findByUserIdAndGameId(1, 14));
+        System.out.println(loginGameHistoryService.findByUserIdAndGameId(2, 14));
         return "OK";
     }
     
@@ -67,7 +73,7 @@ public class TestController {
     @ResponseBody
     public String evict() {
 
-        String[] arrays = {"FacebookAppInformationFindByGameId","FacebookAppInformationFindByGameName","server"};
+        String[] arrays = {"FacebookAppInformationFindByGameId","FacebookAppInformationFindByGameName","FacebookAppInformationFindByIdentifier","server"};
         
         for (String s : arrays) {
             memcachedCacheManager.getCache(s).clear();

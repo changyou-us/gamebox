@@ -4,6 +4,8 @@
  */
 package com.gamebox.dao;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.gamebox.model.LoginGameHistory;
 
 /**
@@ -15,4 +17,6 @@ import com.gamebox.model.LoginGameHistory;
 public interface LoginGameHistoryDao {
 
     public void insert(LoginGameHistory loginGameHistory);
+
+    public int findByUserIdAndGameId(@Param("userId") Integer userId, @Param("gameId") Integer gameId);
 }

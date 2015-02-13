@@ -70,7 +70,7 @@ public class GameController {
         Users users = (Users) request.getSession().getAttribute(WebUtils.USER);
         if (users == null) {
             try {
-                FacebookAppInformation facebookAppInformation = facebookAppInformationService.getFacebookAppInformation(gameId);
+                FacebookAppInformation facebookAppInformation = facebookAppInformationService.findByGameId(gameId);
                 String appId = facebookAppInformation.getAppId();
                 String appUrl = "https://apps.facebook.com/" + appId + "/";
                 response.sendRedirect(appUrl);
@@ -142,7 +142,7 @@ public class GameController {
         }
         model.addAttribute("serverId", serverId);
         
-        FacebookAppInformation facebookAppInformation = facebookAppInformationService.getFacebookAppInformation(gameId);
+        FacebookAppInformation facebookAppInformation = facebookAppInformationService.findByGameId(gameId);
         
         String identifier = facebookAppInformation.getGameName();
         

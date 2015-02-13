@@ -100,7 +100,7 @@ public class RTUController {
                 
             } else if (act.equals("actions")){
                 try {
-                    FacebookAppInformation facebookAppInformation = facebookAppInformationService.getFacebookAppInformation(identifier);
+                    FacebookAppInformation facebookAppInformation = facebookAppInformationService.findByIdentifier(identifier);
                     Integer gameId = facebookAppInformation.getGameId();
                     String appAccessToken = facebookAppInformation.getAppToken();
                     if (appAccessToken == null) {

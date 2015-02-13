@@ -13,4 +13,6 @@ public interface FacebookAppInformationDao {
     public FacebookAppInformation findByGameId(Integer gameId);
 
     public FacebookAppInformation findByGameName(String gamename);
+    
+    public FacebookAppInformation findByIdentifier(String identifier);
 }

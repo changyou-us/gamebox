@@ -27,4 +27,10 @@ public class LoginGameHistoryServiceImpl implements LoginGameHistoryService {
 
         loginGameHistoryDao.insert(loginGameHistory);
     }
+
+    @Override
+    public int findByUserIdAndGameId(Integer userId, Integer gameId) {
+
+        return loginGameHistoryDao.findByUserIdAndGameId(userId, gameId);
+    }
 }

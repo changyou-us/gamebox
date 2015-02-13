@@ -51,9 +51,9 @@ public class JamesTest {
       
     @Test
     public void test() throws Exception {  
-        mockMvc.perform(get("/test/all"));  
-        mockMvc.perform(get("/test/all"));  
-        //mockMvc.perform(get("/test/ksd"));  
+        //mockMvc.perform(get("/test/all"));  
+        //mockMvc.perform(get("/test/all"));  
+        mockMvc.perform(get("/test/ksd"));  
     } 
     
     public void game() throws Exception {  

@@ -28,6 +28,7 @@ import com.gamebox.model.Users;
 import com.gamebox.service.FacebookAppInformationService;
 import com.gamebox.service.GamePaymentTypePriceService;
 import com.gamebox.service.GameService;
+import com.gamebox.service.LoginGameHistoryService;
 import com.gamebox.service.SNSService;
 import com.gamebox.service.ServerService;
 import com.gamebox.service.UsersService;
@@ -57,6 +58,9 @@ public class AuthorizationController {
     @Autowired
     private GamePaymentTypePriceService gamePaymentTypePriceService;
     
+    @Autowired
+    private LoginGameHistoryService loginGameHistoryService;
+    
     @RequestMapping("/authorization/{identifier}")
     public String authorizations(HttpServletRequest request, HttpServletResponse response, @PathVariable String identifier, String credits, ModelMap model) throws Exception{
 
@@ -70,12 +74,16 @@ public class AuthorizationController {
         }
         System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
         */
-        FacebookAppInformation facebookAppInformation = facebookAppInformationService.getFacebookAppInformation(identifier);
+        FacebookAppInformation facebookAppInformation = facebookAppInformationService.findByIdentifier(identifier);
         String appId = facebookAppInformation.getAppId();
         Integer gameId = facebookAppInformation.getGameId();
+        String gameName = facebookAppInformation.getGameName();
         String signed_request = request.getParameter("signed_request"); 
         String rccId = request.getParameter("rcc_id");
-        String backUrl = "https://apps.facebook.com/" + appId + "/?rcc_id=" + rccId + "&credits=" + credits;
+        String backUrl = "https://apps.facebook.com/" + gameName + "/?rcc_id=" + rccId + "&credits=" + credits;
+        if (rccId == null) {
+            backUrl = "https://apps.facebook.com/" + gameName + "/?credits=" + credits;
+        }
         System.out.println(backUrl);
         String authUrl ="https://www.facebook.com/dialog/oauth?client_id=" + appId + "&redirect_uri="+URLEncoder.encode(backUrl,"UTF-8") + "&auth_type=rerequest&scope=email,user_friends";
 
@@ -117,19 +125,30 @@ public class AuthorizationController {
 
         Users user = snsService.getExistFacebookUser(scopeId, appId, accessToken);
         
-        if (user == null) {
+        if (user == null) {// 新用户
             user = snsService.saveFacebookUser(scopeId, appId, request);
                 //return "redirect:/ad/" + rccId + ".html";
+            if (rccId == null) {
+                setLoginInfo2Cache(user, request, response);
+                Integer serverId = serverService.getNewestServerId(gameId);
+                model.addAttribute("serverId", serverId);
+            
+                return identifier + "/play_" + identifier;
+            }
         }
             
-        
+        //老用户
             
         setLoginInfo2Cache(user, request, response);
             //return "redirect:/ad/" + rccId + ".html";
         
         if (rccId != null) {
-            FileUtils.writeLog(request, "guanggao", rccId, user.getUserId());
-            return "redirect:https://" + request.getServerName() + "/ad/" + rccId + ".html";
+            Integer userId = user.getUserId();
+            FileUtils.writeLog(request, "guanggao", rccId, userId);
+            int count = loginGameHistoryService.findByUserIdAndGameId(userId, gameId);
+            if (count == 0) {
+                return "redirect:https://" + request.getServerName() + "/ad/" + rccId + ".html";
+            }
         }
         List<Server> serverList = serverService.findByGameId(facebookAppInformation.getGameId(), true);
         

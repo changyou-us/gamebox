@@ -16,15 +16,22 @@ public class FacebookAppInformationServiceImpl implements FacebookAppInformation
     
     @Cacheable("FacebookAppInformationFindByGameId")
     @Override
-    public FacebookAppInformation getFacebookAppInformation(Integer gameId) {
+    public FacebookAppInformation findByGameId(Integer gameId) {
 
         return facebookAppInformationDao.findByGameId(gameId);
     }
 
     @Cacheable("FacebookAppInformationFindByGameName")
     @Override
-    public FacebookAppInformation getFacebookAppInformation(String gamename) {
+    public FacebookAppInformation findByGameName(String gamename) {
 
         return facebookAppInformationDao.findByGameName(gamename);
+    }
+    
+    @Cacheable("FacebookAppInformationFindByIdentifier")
+    @Override
+    public FacebookAppInformation findByIdentifier(String identifier) {
+
+        return facebookAppInformationDao.findByIdentifier(identifier);
     }
 }
