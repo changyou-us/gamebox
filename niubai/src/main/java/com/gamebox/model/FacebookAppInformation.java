@@ -20,6 +20,8 @@ public class FacebookAppInformation extends BaseEntity {
     private Integer gameId;
 
     private String gameName;
+    
+    private String identifier;
 
     /**
      * @return the appId
@@ -93,6 +95,22 @@ public class FacebookAppInformation extends BaseEntity {
     public void setGameName(String gameName) {
 
         this.gameName = gameName;
+    }
+
+    /**
+     * @return the identifier
+     */
+    public String getIdentifier() {
+
+        return identifier;
+    }
+
+    /**
+     * @param identifier the identifier to set
+     */
+    public void setIdentifier(String identifier) {
+
+        this.identifier = identifier;
     }
 
 }

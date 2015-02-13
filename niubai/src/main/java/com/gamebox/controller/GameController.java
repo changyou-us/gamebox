@@ -144,7 +144,7 @@ public class GameController {
         
         FacebookAppInformation facebookAppInformation = facebookAppInformationService.findByGameId(gameId);
         
-        String identifier = facebookAppInformation.getGameName();
+        String identifier = facebookAppInformation.getIdentifier();
         
         return identifier + "/play_" + identifier;
        

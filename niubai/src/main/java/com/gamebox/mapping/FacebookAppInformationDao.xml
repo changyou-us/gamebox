@@ -14,6 +14,7 @@
     <result column="app_token" property="appToken" jdbcType="VARCHAR" />
     <result column="game_id" property="gameId" jdbcType="VARCHAR" />
     <result column="game_name" property="gameName" jdbcType="INTEGER" />
+    <result column="identifier" property="identifier" jdbcType="INTEGER" />
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
     <result column="modify_date" property="modifyDate" jdbcType="TIMESTAMP" />
   </resultMap>
