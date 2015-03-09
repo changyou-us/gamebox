@@ -86,6 +86,11 @@ function getRole(gameId, serverId, successFunc, errorFunc) {
 						var rolename = data[i].name;
 						roles.push({'roleid':roleid, 'rolename':rolename});
 					}
+				} else if (gameId == 21) {
+					data = $.parseJSON(data);
+					var roleid = data.name;
+					var rolename = roleid;
+					roles.push({'roleid':roleid, 'rolename':rolename});
 				}
 				
 				if (roles.length == 0) {
