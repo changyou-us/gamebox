@@ -5,13 +5,14 @@
 <head>
 	<meta charset="utf-8" />
 	<title></title>
-	<style type="text/css">
 	
-	body { min-width:1000px; min-height:1000px; width:100%; height:100%; background: #000 url(http://dzkruhbej0os7.cloudfront.net/hz/hz_fb1.jpg) no-repeat center top; font-family:'Open Sans';}
-	
-	</style>
     <link type="text/css" rel="stylesheet" href="/css/base.css"  />
 	<link type="text/css" rel="stylesheet" href="/css/tt.css"  />
+	<style type="text/css">
+	
+	body { min-width:1000px; min-height:800px; width:100%; height:100%; background: #000 url(https://dzkruhbej0os7.cloudfront.net/hz/hz_fb1.jpg) no-repeat center top; font-family:'Open Sans';}
+	
+	</style>
 	<script type="text/javascript" src="/js/jquery-1.11.1.min.js" charset="utf-8"></script>
 </head>
 <body>
