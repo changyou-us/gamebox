@@ -1,5 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -40,7 +41,11 @@ function placeOrder(amount, currency) {
 		};
 		
 		var callback = function(response) {
-			console.log(response);
+			if (response.status == "completed") {
+				alert("Transaction Completed!");
+			} else {
+				alert("Transaction Failed!");
+			}
 		};
 		FB.ui(paramObj,callback);
     });
@@ -71,7 +76,7 @@ function placeOrder(amount, currency) {
     		<c:forEach items="${priceList}" var="price">
             <li class="li_1" style="position:relative;">
                 <a class="col_1" href="#" onclick="placeOrder('${price.amount}', '${price.currency}'); return false;">
-                    <div class="price"><c:choose><c:when test="${price.currency eq 'USD'}">$</c:when><c:otherwise>B</c:otherwise></c:choose>${price.amount}</div>
+                    <div class="price"><c:choose><c:when test="${price.currency eq 'USD'}">$</c:when><c:otherwise>B</c:otherwise></c:choose><fmt:formatNumber type="number" value="${price.amount}"/></div>
                     <div class="icon_f"><img src="/images/facebook/f2.png" width="35" height="15" /></div>
                     <div class="gold"><c:choose><c:when test="${price.coinBonus == 0}"><span class="span_1">${price.gameCoin}</span></c:when><c:otherwise><span class="span_5">${price.gameCoin}+${price.coinBonus}</span></c:otherwise></c:choose><span class="span_2">Gold</span></div>
                     <div class="descript"></div>
