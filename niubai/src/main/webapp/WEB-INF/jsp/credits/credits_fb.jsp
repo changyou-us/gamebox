@@ -78,7 +78,7 @@ function placeOrder(amount, currency) {
                 <a class="col_1" href="#" onclick="placeOrder('${price.amount}', '${price.currency}'); return false;">
                     <div class="price"><c:choose><c:when test="${price.currency eq 'USD'}">$</c:when><c:otherwise>B</c:otherwise></c:choose><fmt:formatNumber type="number" value="${price.amount}"/></div>
                     <div class="icon_f"><img src="/images/facebook/f2.png" width="35" height="15" /></div>
-                    <div class="gold"><c:choose><c:when test="${price.coinBonus == 0}"><span class="span_1">${price.gameCoin}</span></c:when><c:otherwise><span class="span_5">${price.gameCoin}+${price.coinBonus}</span></c:otherwise></c:choose><span class="span_2">Gold</span></div>
+                    <div class="gold"><c:choose><c:when test="${price.coinBonus == 0}"><span class="span_1">${price.gameCoin}</span></c:when><c:otherwise><span class="span_5">${price.gameCoin}+${price.coinBonus}</span></c:otherwise></c:choose><span class="span_2">${price.coinName}</span></div>
                     <div class="descript"></div>
                     <div class="buy_btn">BUY</div>
                 </a>
