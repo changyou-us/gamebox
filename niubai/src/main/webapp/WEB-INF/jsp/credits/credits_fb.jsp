@@ -61,7 +61,7 @@ function placeOrder(amount, currency) {
         <select class="sel" id="GameServer" name="GameServer">
             <option selected="selected" value="-1">-Select-</option>
             <c:forEach items="${serverList}" var="server">
-            <option value="${server.serverId}">S${server.serverId}-${server.name}</option>
+            <option value="${server.serverId}">${server.name}</option>
             </c:forEach>
         </select>
     </div>
