@@ -193,7 +193,7 @@ public class ServerServiceImpl implements ServerService{
                 }
                 urlParams = urlParams.substring(0, urlParams.length() - 1);
                 String sign = DigestUtils.md5Hex(urlParams + key);
-                String url = "https://tt-s" + sid + ".gamebox.com/index.php?" + urlParams + "&sign=" + sign;
+                String url = "https://tt-s" + sid.substring(3) + ".gamebox.com/index.php?" + urlParams + "&sign=" + sign;
 
                 return url;
             }
