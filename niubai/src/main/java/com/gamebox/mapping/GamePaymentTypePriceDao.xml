@@ -17,17 +17,17 @@
   </resultMap>
   <select id="findByGameIdAndPaymentTypeId" resultMap="gamePaymentTypePriceMap">
   	select * from gamebox_game_payment_type_price
-  	where game_id = #{gameId,jdbcType=INTEGER} and #{paymentTypeId,jdbcType=INTEGER}
+  	where game_id = #{gameId,jdbcType=INTEGER} and payment_type_id = #{paymentTypeId,jdbcType=INTEGER}
   </select>
   
   <select id="findByGameIdPaymentTypeIdCurrencyAndAmount" resultMap="gamePaymentTypePriceMap">
   	select * from gamebox_game_payment_type_price
-  	where game_id = #{gameId,jdbcType=INTEGER} and #{paymentTypeId,jdbcType=INTEGER} and currency = #{currency,jdbcType=VARCHAR} and amount = #{amount,jdbcType=DECIMAL} limit 1
+  	where game_id = #{gameId,jdbcType=INTEGER} and payment_type_id = #{paymentTypeId,jdbcType=INTEGER} and currency = #{currency,jdbcType=VARCHAR} and amount = #{amount,jdbcType=DECIMAL} limit 1
   </select>
 
   <select id="findByGameIdPaymentTypeIdCurrencyAmountAndDescription" resultMap="gamePaymentTypePriceMap">
   	select * from gamebox_game_payment_type_price
-  	where game_id = #{gameId,jdbcType=INTEGER} and #{paymentTypeId,jdbcType=INTEGER} and currency = #{currency,jdbcType=VARCHAR} and amount = #{amount,jdbcType=DECIMAL} and description = #{description,jdbcType=VARCHAR} limit 1
+  	where game_id = #{gameId,jdbcType=INTEGER} and payment_type_id = #{paymentTypeId,jdbcType=INTEGER} and currency = #{currency,jdbcType=VARCHAR} and amount = #{amount,jdbcType=DECIMAL} and description = #{description,jdbcType=VARCHAR} limit 1
   </select>
    
 </mapper>
