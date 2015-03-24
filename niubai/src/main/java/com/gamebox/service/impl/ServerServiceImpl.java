@@ -170,7 +170,7 @@ public class ServerServiceImpl implements ServerService{
             if (gameId == 21) {
                 Server server = serverDao.findServerByGidAndSid(gameId, serverId);
                 String account = playerId;
-                String sid = serverId.toString();
+                String sid = "gbs" + serverId.toString();
                 String time = DateUtils.getCurrentTime().toString();
                 String helpUrl = URLEncoder.encode("https://www.facebook.com/tidaltrekofficial", "UTF-8");
                 String forumUrl = URLEncoder.encode("https://www.facebook.com/tidaltrekofficial", "UTF-8");
