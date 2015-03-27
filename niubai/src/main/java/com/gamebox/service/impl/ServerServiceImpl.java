@@ -336,6 +336,39 @@ public class ServerServiceImpl implements ServerService{
             serverId = server.getTransferedId();
             sid = server.getTransferedId().toString();
         }
+        
+        if (gameId == 21) {
+            String account = uid;
+            sid = "gbs" + sid;
+
+            Map<String, String> paramMap = new TreeMap<String, String>();
+            paramMap.put("account", account);
+            paramMap.put("gold", gameCoins.toString());
+            paramMap.put("money", amount);
+            paramMap.put("orderId", ordersn);
+            paramMap.put("sid", sid);
+            paramMap.put("time", time);
+            paramMap.put("platform", "fb");
+            String urlParams = "";
+            for (Entry<String, String> e : paramMap.entrySet()) {
+                urlParams += e.getKey() + "=" + e.getValue() + "&";
+            }
+            urlParams = urlParams.substring(0, urlParams.length() - 1);
+            String sign = DigestUtils.md5Hex(urlParams + key);
+            
+            String url = "https://tt-s" + sid.substring(3) + ".gamebox.com/pay.php?" + urlParams + "&sign=" + sign;
+            String responseStr = WebUtils.sendGet(url, null);
+            
+            System.out.println(responseStr);
+            System.out.println(expectResult);
+            if (expectResult.equals(responseStr.trim())) {
+                
+                return 1;
+            } else {
+                return 0;
+            }
+            
+        }
 
         if (gameId == 19) {
             int timestamp = DateUtils.getCurrentTime();
