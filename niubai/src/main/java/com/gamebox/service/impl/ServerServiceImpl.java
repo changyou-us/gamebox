@@ -186,7 +186,7 @@ public class ServerServiceImpl implements ServerService{
                 paramMap.put("forumUrl", forumUrl);
                 paramMap.put("favoriteUrl", favoriteUrl);
                 paramMap.put("payUrl", payUrl);
-
+                paramMap.put("platform", "fb");
                 String urlParams = "";
                 for (Entry<String, String> e : paramMap.entrySet()) {
                     urlParams += e.getKey() + "=" + e.getValue() + "&";
