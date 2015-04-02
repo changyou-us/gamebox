@@ -13,7 +13,6 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
@@ -23,7 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
-import com.gamebox.Setting;
 
 /**
  * Utils - Web
@@ -43,6 +41,12 @@ public final class WebUtils {
     public final static String COOKIE_PREFIX = "gamebox_";
 
     public final static String COOKIE_AUTH = "auth";
+    
+    public final static Integer COOKIE_AGE = 999999999;
+    
+    public final static String COOKIE_DOMAIN = ".gamebox.com";
+    
+    public final static String COOKIE_PATH = "/";
 
     /**
      * COOKIE中登陆用户的用户名的key值
@@ -75,12 +79,12 @@ public final class WebUtils {
     /**
      * 连接超时时间
      */
-    public static final Integer CONNECT_TIMEOUT = SettingUtils.get().getConnectTimeout();
+    public static final Integer CONNECT_TIMEOUT = 10000;
 
     /**
      * 读写超时时间
      */
-    public static final Integer READ_TIMEOUT = SettingUtils.get().getReadTimeout();
+    public static final Integer READ_TIMEOUT = 10000;
 
     /**
      * 添加cookie
@@ -148,8 +152,7 @@ public final class WebUtils {
     public static void addCookie(HttpServletRequest request, HttpServletResponse response, String name, String value,
             Integer maxAge) {
 
-        Setting setting = SettingUtils.get();
-        addCookie(request, response, name, value, maxAge, setting.getCookiePath(), setting.getCookieDomain(), null);
+        addCookie(request, response, name, value, maxAge, COOKIE_PATH, COOKIE_DOMAIN, null);
     }
 
     /**
@@ -166,8 +169,7 @@ public final class WebUtils {
      */
     public static void addCookie(HttpServletRequest request, HttpServletResponse response, String name, String value) {
 
-        Setting setting = SettingUtils.get();
-        addCookie(request, response, name, value, null, setting.getCookiePath(), setting.getCookieDomain(), null);
+        addCookie(request, response, name, value, null, COOKIE_PATH, COOKIE_DOMAIN, null);
     }
 
     /**
@@ -249,8 +251,7 @@ public final class WebUtils {
      */
     public static void removeCookie(HttpServletRequest request, HttpServletResponse response, String name) {
 
-        Setting setting = SettingUtils.get();
-        removeCookie(request, response, name, setting.getCookiePath(), setting.getCookieDomain());
+        removeCookie(request, response, name, COOKIE_PATH, COOKIE_DOMAIN);
     }
 
     /**
@@ -508,7 +509,7 @@ public final class WebUtils {
             // 建立实际的连接
             httpConn.connect();
             // 响应头部获取
-            Map<String, List<String>> headers = httpConn.getHeaderFields();
+            //Map<String, List<String>> headers = httpConn.getHeaderFields();
             // 遍历所有的响应头字段
             /*
             for (String key : headers.keySet()) {

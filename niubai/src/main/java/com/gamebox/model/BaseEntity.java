@@ -19,8 +19,6 @@ package com.gamebox.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.validation.groups.Default;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -45,22 +43,8 @@ public abstract class BaseEntity implements Serializable {
     /** "修改日期"属性名称 */
     public static final String MODIFY_DATE_PROPERTY_NAME = "modifyDate";
 
-    /**
-     * 保存验证组
-     */
-    public interface Save extends Default {
-
-    }
-
-    /**
-     * 更新验证组
-     */
-    public interface Update extends Default {
-
-    }
-
     /** ID */
-    private Long id;
+    private Integer id;
 
     /** 创建日期 */
     private Date createDate;
@@ -74,7 +58,7 @@ public abstract class BaseEntity implements Serializable {
      * @return ID
      */
     @JsonProperty
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -84,7 +68,7 @@ public abstract class BaseEntity implements Serializable {
      * @param id
      *            ID
      */
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

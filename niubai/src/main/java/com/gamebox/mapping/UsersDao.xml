@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gamebox.dao.UsersDao">
+  
+  
+  <resultMap id="usersMap" type="com.gamebox.model.Users" >
+    <id column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="salt" property="salt" jdbcType="VARCHAR" />
+    <result column="reg_time" property="regTime" jdbcType="INTEGER" />
+    <result column="reg_ip" property="regIp" jdbcType="VARCHAR" />
+    <result column="reg_country" property="regCountry" jdbcType="VARCHAR" />
+    <result column="account_type" property="accountType" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <insert id="insert" parameterType="com.gamebox.model.Users" useGeneratedKeys="true" keyProperty="userId">
+    insert into gamebox_users (email, 
+    						   password, 
+    						   salt, 
+    						   nickname, 
+    						   reg_time, 
+    						   reg_ip, 
+    						   reg_country, 
+    						   account_type
+      )
+    values (#{email,jdbcType=VARCHAR}, 
+    		#{password,jdbcType=VARCHAR}, 
+    		#{salt,jdbcType=VARCHAR}, 
+    		#{nickname,jdbcType=VARCHAR}, 
+    		#{regTime,jdbcType=INTEGER}, 
+    		#{regIp,jdbcType=VARCHAR}, 
+    		#{regCountry,jdbcType=VARCHAR},
+    		#{accountType,jdbcType=INTEGER}
+      )
+  </insert>
+  
+  <delete id="deleteByUserId" parameterType="java.lang.Integer" >
+    delete from gamebox_users 
+    where user_id = #{userId}
+  </delete>
+  
+  <select id="findUserByUserId" resultMap="usersMap" parameterType="java.lang.String">
+  	select * from gamebox_users
+  	where user_id = #{userId,jdbcType=INTEGER} 
+  </select>
+  
+  <select id="findUserByEmail" resultMap="usersMap" parameterType="java.lang.String">
+  	select * from gamebox_users
+  	where email = #{email,jdbcType=VARCHAR} 
+  </select>
+  
+  <select id="findUserByEmailsList" resultMap="usersMap">
+  	<foreach collection="emailsList" item="item" index="index" separator="union"> 
+		select * from gamebox_users
+  	    where email = #{item,jdbcType=VARCHAR}
+	</foreach>
+	order by user_id limit 1
+  </select>
+  
+</mapper>

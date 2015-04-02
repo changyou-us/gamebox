@@ -1,22 +1,34 @@
 package com.gamebox.controller;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.gamebox.model.FacebookAppInformation;
+import com.gamebox.model.LoginGameHistory;
+import com.gamebox.model.Server;
+import com.gamebox.model.DisplayType;
+import com.gamebox.model.Users;
+import com.gamebox.model.OpenStatusType;
+import com.gamebox.service.FacebookAppInformationService;
 import com.gamebox.service.GameService;
-
+import com.gamebox.service.LoginGameHistoryService;
+import com.gamebox.service.ServerService;
+import com.gamebox.util.DateUtils;
+import com.gamebox.util.HttpUtils;
+import com.gamebox.util.WebUtils;
 
 /**
  * Controller - 管理员
@@ -24,8 +36,8 @@ import com.gamebox.service.GameService;
  * @author niuhongliang_tmp
  * @version 1.0
  */
-@Controller("webgameGameController")
-@RequestMapping("/webgame/play")
+@Controller
+@RequestMapping("/games")
 public class GameController {
 
     public static final String LOGIN_RESULT_SUCCESS = "success";
@@ -38,36 +50,46 @@ public class GameController {
 
     public static final String LOGIN_MAINTAIN = "maintain";
 
-    @Resource(name = "gameServiceImpl")
+    @Autowired
     private GameService gameService;
 
-    @Resource(name = "serverServiceImpl")
+    @Autowired
     private ServerService serverService;
 
-    @Resource(name = "loginGameHistoryServiceImpl")
+    @Autowired
     private LoginGameHistoryService loginGameHistoryService;
+    
+    @Autowired
+    private FacebookAppInformationService facebookAppInformationService;
 
-    @Resource(name = "userPlayInfoServiceImpl")
-    private UserPlayInfoService userPlayInfoService;
-
-    @RequestMapping(value = "/login_game", method = RequestMethod.POST)
+    @RequestMapping(value = "/login")
     @ResponseBody
-    public Map<String, String> loginGame(String gameId, String serverId, HttpServletRequest request,
+    public Map<String, String> login(Integer gameId, Integer serverId, HttpServletRequest request,
             HttpServletResponse response) {
 
-        Map<String, String> resultMap = new HashMap<String, String>();
-        if (StringUtils.isBlank(gameId) || StringUtils.isBlank(serverId)
-                || !(ValidateUtils.isPositiveInt(gameId) && ValidateUtils.isPositiveInt(serverId))) {
-            resultMap.put("result", LOGIN_PARAM_FAILURE);
-            return resultMap;
+        Users users = (Users) request.getSession().getAttribute(WebUtils.USER);
+        if (users == null) {
+            try {
+                FacebookAppInformation facebookAppInformation = facebookAppInformationService.findByGameId(gameId);
+                String appId = facebookAppInformation.getAppId();
+                String appUrl = "https://apps.facebook.com/" + appId + "/";
+                response.sendRedirect(appUrl);
+                return null;
+            }
+            catch (IOException e) {
+               e.printStackTrace();
+               return null;
+            } 
         }
+        
+        Map<String, String> resultMap = new HashMap<String, String>();
         Integer sid = null;
-        Integer gid = Integer.parseInt(gameId);
+        Integer gid = gameId;
         if ("10000000".equals(serverId)) {
             sid = serverService.getNewestServerId(gid);
         }
         else {
-            sid = Integer.parseInt(serverId);
+            sid = serverId;
         }
         if (!serverService.serverExists(sid, gid, OpenStatusType.able, DisplayType.display)) {
             resultMap.put("result", LOGIN_SERVER_FAILURE);
@@ -91,33 +113,40 @@ public class GameController {
         resultMap.put("url", url);
         resultMap.put("name", serverService.findServerByGidAndSid(gid, sid).getName());
         resultMap.put("timezone", serverService.findServerByGidAndSid(gid, sid).getTimezone().name());
-        WebUtils.addCookie(request, response, "latestGame_" + gameId + "_" + user.getUserId(), serverId, SettingUtils
-                .get().getCookieAge());
+        WebUtils.addCookie(request, response, "latestGame_" + gameId + "_" + user.getUserId(), serverId.toString(), WebUtils.COOKIE_AGE);
         // 向loginGameHistory表中插入数据,向userPlayInfo表中插入数据
-        userPlayInfoService.save(gid, sid, user, request);
+        
+        Date date = new Date();
+        LoginGameHistory loginGameHistory = new LoginGameHistory();
+        loginGameHistory.setUserId(user.getUserId());
+        loginGameHistory.setUserIp(HttpUtils.getIp(request));
+        loginGameHistory.setEmail("");
+        loginGameHistory.setGameId(gid);
+        loginGameHistory.setServerId(sid);
+        loginGameHistory.setLoginTime(DateUtils.getCurrentTime());
+        loginGameHistory.setCreateDate(date);
+        loginGameHistory.setModifyDate(date);
+        loginGameHistoryService.save(loginGameHistory);
 
         // 更新session中user的玩游戏的信息
-        Webgame game = gameService.findByGameId(gid);
-        if (null != game) {
-            user.setLastGameName(game.getName());
-            // 获取游戏url
-            user.setGameUrl(game.getHomepage());
-            user.setGameLogoUrl(game.getLogoUrl());
-            request.getSession().setAttribute(WebUtils.USER, user);
-        }
+        
         return resultMap;
     }
 
-    @RequestMapping(value = "/play", method = RequestMethod.GET)
-    public String play(String gameId, String gameUrl, ModelMap model) {
+    @RequestMapping(value = "/playpage", method = RequestMethod.GET)
+    public String playpage(Integer gameId, Integer serverId, ModelMap model) {
 
-        try {
-            model.addAttribute("gameUrl", URLDecoder.decode(gameUrl, "UTF-8"));
-            model.addAttribute("webgame", gameService.findByGameId(Integer.parseInt(gameId)));
+        
+        if (serverId == null || serverId > 1000) { // 这就走最新服
+            serverId = serverService.getNewestServerId(gameId);
         }
-        catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return "/webgame/games/play";
+        model.addAttribute("serverId", serverId);
+        
+        FacebookAppInformation facebookAppInformation = facebookAppInformationService.findByGameId(gameId);
+        
+        String identifier = facebookAppInformation.getIdentifier();
+        
+        return identifier + "/play_" + identifier;
+       
     }
 }

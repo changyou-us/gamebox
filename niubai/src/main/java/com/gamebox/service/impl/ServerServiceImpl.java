@@ -1,42 +1,32 @@
 package com.gamebox.service.impl;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import javax.annotation.Resource;
-
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.springframework.cache.annotation.CacheEvict;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
+import com.gamebox.dao.DirectPaymentOrderDao;
+import com.gamebox.dao.GamePaymentTypePriceDao;
 import com.gamebox.dao.ServerDao;
+import com.gamebox.dao.UsersDao;
+import com.gamebox.model.DirectPaymentOrder;
+import com.gamebox.model.GamePaymentTypePrice;
+import com.gamebox.model.OrderStatus;
 import com.gamebox.model.Server;
-import com.gamebox.model.Server.DisplayType;
-import com.gamebox.model.Server.IsNewType;
-import com.gamebox.model.Server.RecommendedType;
+import com.gamebox.model.DisplayType;
+import com.gamebox.model.TransIdUsedStatus;
 import com.gamebox.model.Users;
-import com.gamebox.model.Webgame;
-import com.gamebox.model.Webgame.OpenStatusType;
+import com.gamebox.model.OpenStatusType;
 import com.gamebox.service.GameService;
 import com.gamebox.service.ServerService;
 import com.gamebox.util.Base64Util;
@@ -48,17 +38,14 @@ import com.gamebox.util.WebUtils;
  * Service - 管理员
  * 
  * @author Dick niu
- * @version 1.0
- */
-@Service("serverServiceImpl")
-public class ServerServiceImpl  implements ServerService {
+ * @version 1.0a
+ */ 
+@Service
+public class ServerServiceImpl implements ServerService{
 
     public static final String IS_NEW_TYPE = "isNew";
 
     public static final String RECOMMENDED_TYPE = "recommended";
-
-    // 特殊游戏ID 5 - Wartune
-    private static final String LOGIN_GAME_WARTUNE = "5";
 
     // 占位符，替换成serverId
     private static final String LOGIN_GAME_SERVERID_STRING = "$(sid)";
@@ -99,128 +86,41 @@ public class ServerServiceImpl  implements ServerService {
     // 占位符，替换成昨天的日期
     private static final String RANK_GAME_YESTERDAY = "$(yesterday)";
 
-    @Resource(name = "directPaymentOrderDaoImpl")
+    @Autowired
     private DirectPaymentOrderDao directPaymentOrderDao;
 
-    @Resource(name = "serverDaoImpl")
+    @Autowired
     private ServerDao serverDao;
 
-    @Resource(name = "staticServiceImpl")
-    private StaticService staticService;
-
-    @Resource(name = "gameServiceImpl")
+    @Autowired
     private GameService gameService;
 
-    @Resource(name = "usersDao")
+    @Autowired
     private UsersDao usersDao;
 
-    @Resource(name = "userPlayInfoDaoImpl")
-    private UserPlayInfoDao userPlayInfoDao;
-
-    @Resource(name = "gamePaymentTypePriceDaoImpl")
+    @Autowired
     private GamePaymentTypePriceDao gamePaymentTypePriceDao;
 
-    @Resource(name = "gameTokenPriceDaoImpl")
-    private GameTokenPriceDao gameTokenPriceDao;
-
-    @Resource(name = "paymentTypeServiceImpl")
-    protected PaymentTypeService paymentTypeService;
-
-    @Resource(name = "tokenExchangeOrderDaoImpl")
-    private TokenExchangeOrderDao tokenExchangeOrderDao;
-
-
-    @Transactional(readOnly = true)
-    public Server find(Long id) {
-
-        return null;
-    }
-
-    @Transactional
-    @CacheEvict(value = { "server" }, allEntries = true)
-    public void save(Server server) {
-
-//        Assert.notNull(server);
-//
-//        super.save(server);
-//        serverDao.flush();
-//
-//        if (server.getDisplay() != null) {
-//            if (server.getDisplay() == DisplayType.display) {
-//
-//            }
-//        }
-    }
-
-    @Transactional(readOnly = true)
-    public boolean serverExists(Integer serverId, Integer gameId) {
-
-        return serverDao.serverExists(serverId, gameId);
-    }
-
-    @Transactional(readOnly = true)
+    @Override
     public boolean serverExists(Integer serverId, Integer gameId, OpenStatusType openStatus, DisplayType display) {
 
         return serverDao.serverExists(serverId, gameId, openStatus, display);
     }
 
-    @Transactional
-    public boolean updateImm(Integer serverId, Integer gameId, String pName, Object pValue) {
-
-        boolean result = false;
-        if (IS_NEW_TYPE.equals(pName)) {
-            if (IsNewType.fresh.name().equals(pValue.toString())) {
-                result = serverDao.updateIsNew(serverId, gameId, IsNewType.fresh);
-            }
-            else if (IsNewType.old.name().equals(pValue.toString())) {
-                result = serverDao.updateIsNew(serverId, gameId, IsNewType.old);
-            }
-
-        }
-        else if (RECOMMENDED_TYPE.equals(pName)) {
-            if (RecommendedType.recommended.name().equals(pValue.toString())) {
-                result = serverDao.updateRecommended(serverId, gameId, RecommendedType.recommended);
-            }
-            else if (RecommendedType.notRecommended.name().equals(pValue.toString())) {
-                result = serverDao.updateRecommended(serverId, gameId, RecommendedType.notRecommended);
-            }
-        }
-
-        // 重新生成服务器列表模板
-        // staticService.build(serverDao.findByGameId(gameId, true), gameId);
-        return result;
-    }
-
-    @Transactional
-    @CacheEvict(value = { "server" }, allEntries = true)
-    public Server update(Server server) {
-
-        Server result = super.update(server);
-        // staticService.build(serverDao.findByGameId(server.getGameId(), false), server.getGameId());
-        return result;
-    }
-
-    @Transactional
-    @CacheEvict(value = { "server" }, allEntries = true)
-    public void delete(Long... ids) {
-
-        super.delete(ids);
-    }
-
-    @Transactional(readOnly = true)
+    @Override
     public Server findServerByGidAndSid(Integer gid, Integer sid) {
 
         return serverDao.findServerByGidAndSid(gid, sid);
     }
 
-    @Transactional(readOnly = true)
     @Cacheable("server")
+    @Override
     public List<Server> findByGameId(Integer gid, Boolean invalid) {
 
         return serverDao.findByGameId(gid, invalid);
     }
 
-    @Transactional(readOnly = true)
+    @Override
     public String buildGameUrl(Integer gameId, Integer serverId, Users user) {
 
         Server server = serverDao.findServerByGidAndSid(gameId, serverId);
@@ -232,12 +132,25 @@ public class ServerServiceImpl  implements ServerService {
         if (playerId == null) {
             return null;
         }
+        
+        String url = specialGamesBuildUrl(gameId, serverId, playerId);
+        if (url != null) {
+            return url;
+        }
         // 2.解析loginSecret
         String loginSecret = server.getLoginSecret();
         // 合服后是否启用transferedId
-        Integer sid = server.getTransIdUsedStatus() == Server.TransIdUsedStatus.NOT_USED ? server.getServerId()
+        Integer sid = server.getTransIdUsedStatus() == TransIdUsedStatus.NOT_USED ? server.getServerId()
                 : server.getTransferedId();
         String showId = server.getShowId() == null ? "" : Integer.toString(server.getShowId());
+        System.out.println(loginSecret);
+        System.out.println(sid.toString());
+        System.out.println(showId);
+        System.out.println(playerId);
+        System.out.println(randId);
+        System.out.println(time);
+        System.out.println(server.getPublicKey());
+        System.out.println(user.getNickname());
         loginSecret = replaceUrl(loginSecret, sid.toString(), showId, playerId, randId, time, server.getPublicKey(),
                 oauth, "", user.getNickname(), "");
         // 3.对loginSecret加密
@@ -251,7 +164,57 @@ public class ServerServiceImpl  implements ServerService {
                 oauth, "", user.getNickname(), "");
     }
 
-    @Transactional(readOnly = true)
+    private String specialGamesBuildUrl(Integer gameId, Integer serverId, String playerId) {
+
+        try {
+            if (gameId == 21) {
+                Server server = serverDao.findServerByGidAndSid(gameId, serverId);
+                String account = playerId;
+                String sid = "gbs" + serverId.toString();
+                String time = DateUtils.getCurrentTime().toString();
+                String helpUrl = URLEncoder.encode("https://www.facebook.com/tidaltrekofficial", "UTF-8");
+                String forumUrl = URLEncoder.encode("https://www.facebook.com/tidaltrekofficial", "UTF-8");
+                String favoriteUrl = URLEncoder.encode("https://www.facebook.com/tidaltrekofficial", "UTF-8");
+                String payUrl = URLEncoder.encode("https://apps.facebook.com/tidal-trek/?credits=1", "UTF-8");
+                String key = server.getPublicKey();
+
+                Map<String, String> paramMap = new TreeMap<String, String>();
+                paramMap.put("account", account);
+                paramMap.put("sid", sid);
+                paramMap.put("time", time);
+                paramMap.put("helpUrl", helpUrl);
+                paramMap.put("forumUrl", forumUrl);
+                paramMap.put("favoriteUrl", favoriteUrl);
+                paramMap.put("payUrl", payUrl);
+                paramMap.put("platform", "fb");
+                String urlParams = "";
+                for (Entry<String, String> e : paramMap.entrySet()) {
+                    urlParams += e.getKey() + "=" + e.getValue() + "&";
+                }
+                urlParams = urlParams.substring(0, urlParams.length() - 1);
+                String sign = DigestUtils.md5Hex(urlParams + key);
+                String url = "https://tt-s" + sid.substring(3) + ".gamebox.com/index.php?" + urlParams + "&sign=" + sign;
+
+                return url;
+            }
+            else {
+                return null;
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    private boolean verify(String string, String string2, String playerId, String randId, String time, String oauth,
+            String showId) {
+
+        return true;
+    }
+
+    @Override
     public String buildRankUrl(Integer gameId, Integer serverId, String type) {
 
         Server server = serverDao.findServerByGidAndSid(gameId, serverId);
@@ -262,7 +225,7 @@ public class ServerServiceImpl  implements ServerService {
         // 1.解析rankSecret
         String rankSecret = server.getRankSecret();
         // 合服后是否启用transferedId
-        Integer sid = server.getTransIdUsedStatus() == Server.TransIdUsedStatus.NOT_USED ? server.getServerId()
+        Integer sid = server.getTransIdUsedStatus() == TransIdUsedStatus.NOT_USED ? server.getServerId()
                 : server.getTransferedId();
         String showId = server.getShowId() == null ? "" : Integer.toString(server.getShowId());
         if (rankSecret != null && !"".equals(rankSecret)) {
@@ -275,6 +238,7 @@ public class ServerServiceImpl  implements ServerService {
     }
 
     // 0-orginalUrl, 1-serverId, 2-showId, 3-userId, 4-randId, 5-time, 6-key, 7-oauth, 8-type, 9-nick, 10-yesterday
+    
     private String replaceUrl(String... args) {
 
         for (int i = 0; i < args.length; i++) {
@@ -316,52 +280,6 @@ public class ServerServiceImpl  implements ServerService {
         return replaceAuth64(url.replaceFirst(LOGIN_GAME_AUTH64, Base64Util.encode(subStr, "UTF-8")), index++);
     }
 
-    private boolean verify(String gameId, String serverId, String userId, String randId, String time, String oauth,
-            String showId) {
-
-        if (gameId.equals(LOGIN_GAME_WARTUNE)) {
-            if ("4".equals(serverId)) {
-                serverId = "3";
-            }
-            String verfiyUrl = "http://s" + serverId + ".gamebox.com/createlogin?content=" + userId + "|" + randId
-                    + "|" + time + "|" + oauth + "&site=cy_000" + showId;
-            System.out.println(verfiyUrl);
-            try {
-                URL url = new URL(verfiyUrl);
-                URLConnection urlConn = url.openConnection();
-                BufferedReader bfr = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-                String msg = bfr.readLine();
-                bfr.close();
-                // 代理商登录不成功
-                if (!"0".equals(msg)) {
-                    return false;
-                }
-            }
-            catch (MalformedURLException e) {
-                return false;
-            }
-            catch (IOException e) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public Map<String, String> getMapByServer(Server server) {
-
-        Map<String, String> rmap = new HashMap<String, String>();
-        if (server != null && server.getDisplay() == DisplayType.display) {
-            rmap.put("serverId", server.getServerId().toString());
-            rmap.put("isNew", server.getIsNew().toString());
-            rmap.put("recommended", server.getRecommended().toString());
-            rmap.put("timezone", server.getTimezone().name());
-            rmap.put("name", server.getName());
-            rmap.put("status", server.getStatus().name());
-        }
-        return rmap;
-    }
-
     @Override
     public int gamesCharge(DirectPaymentOrder directPaymentOrder) {
 
@@ -371,18 +289,17 @@ public class ServerServiceImpl  implements ServerService {
         Integer gameId = directPaymentOrder.getGameId();
         Integer serverId = directPaymentOrder.getServerId();
         Integer paymentTypeId = directPaymentOrder.getPaymentTypeId();
-        // String sid = serverId.toString();
-        // Server server = serverService.findServerByGidAndSid(gameId, serverId);
+        
         String amount = String.valueOf(directPaymentOrder.getConvertAmount());
-        String paymentName = paymentTypeService.findByTypeId(paymentTypeId).getTypeName();
+        String paymentName = "facebook";
         String currency = directPaymentOrder.getCurrency();
         GamePaymentTypePrice gamePaymentTypePrice = null;
         if (gameId == 19) {
-            gamePaymentTypePrice = gamePaymentTypePriceDao.findByGameIdCurrencyAndAmount(gameId, paymentTypeId,
+            gamePaymentTypePrice = gamePaymentTypePriceDao.findByGameIdPaymentTypeIdCurrencyAmountAndDescription(gameId, paymentTypeId,
                     currency, directPaymentOrder.getAmount(), directPaymentOrder.getDescription());
         }
         else {
-            gamePaymentTypePrice = gamePaymentTypePriceDao.findByGameIdCurrencyAndAmount(gameId, paymentTypeId,
+            gamePaymentTypePrice = gamePaymentTypePriceDao.findByGameIdPaymentTypeIdCurrencyAndAmount(gameId, paymentTypeId,
                     currency, directPaymentOrder.getAmount());
         }
         Integer gameCoin = gamePaymentTypePrice.getGameCoin();
@@ -394,37 +311,6 @@ public class ServerServiceImpl  implements ServerService {
         String description = directPaymentOrder.getDescription();
         return this.recharge(gameId, serverId, directPaymentOrder.getUserId(), amount, ordersn, roleId, roleName,
                 gameCoins, gameCoin, coinBonus, paymentName, currency, true, description);
-
-    }
-
-    @Override
-    public int gamesCharge(TokenExchangeOrder tokenExchangeOrder) {
-
-        if (tokenExchangeOrder.getStatus().equals(OrderStatus.COMPLETED)) {
-            return 1;
-        }
-        Integer gameId = tokenExchangeOrder.getGameId();
-        Integer serverId = tokenExchangeOrder.getServerId();
-        // String sid = serverId.toString();
-        // Server server = serverService.findServerByGidAndSid(gameId, serverId);
-        BigDecimal bigDecimal = new BigDecimal(tokenExchangeOrder.getTokenAmount());
-
-        String amount = bigDecimal.divide(new BigDecimal(100)).toString();
-        String paymentName = "Gtokens";
-        GameTokenPrice gameTokenPrice = gameTokenPriceDao.findByGameIdAndTokenAmount(gameId,
-                tokenExchangeOrder.getTokenAmount());
-
-        Integer gameCoin = gameTokenPrice.getGameCoin();
-        Integer coinBonus = gameTokenPrice.getCoinBonus();
-        Integer gameCoins = gameCoin + coinBonus;
-        String ordersn = tokenExchangeOrder.getOrderSn();
-        String roleId = tokenExchangeOrder.getRoleId();
-        String roleName = tokenExchangeOrder.getGameRole();
-        String description = tokenExchangeOrder.getDescription();
-        tokenExchangeOrder.setGameCoin(gameCoins);
-        tokenExchangeOrderDao.persist(tokenExchangeOrder);
-        return this.recharge(gameId, serverId, tokenExchangeOrder.getUserId(), amount, ordersn, roleId, roleName,
-                gameCoins, gameCoin, coinBonus, paymentName, "USD", true, description);
 
     }
 
@@ -443,12 +329,45 @@ public class ServerServiceImpl  implements ServerService {
         String expectResult = server.getRechargeSign();
         String auth = "";
         if (isValidate) {
-            uid = gameService.getPlayerId(gameId, usersDao.findUserById(uid));
+            uid = gameService.getPlayerId(gameId, usersDao.findUserByUserId(uid));
         }
 
-        if (server.getTransIdUsedStatus().equals(Server.TransIdUsedStatus.USED)) {
+        if (server.getTransIdUsedStatus().equals(TransIdUsedStatus.USED)) {
             serverId = server.getTransferedId();
             sid = server.getTransferedId().toString();
+        }
+        
+        if (gameId == 21) {
+            String account = uid;
+            sid = "gbs" + sid;
+
+            Map<String, String> paramMap = new TreeMap<String, String>();
+            paramMap.put("account", account);
+            paramMap.put("gold", gameCoins.toString());
+            paramMap.put("money", amount);
+            paramMap.put("orderId", ordersn);
+            paramMap.put("sid", sid);
+            paramMap.put("time", time);
+            paramMap.put("platform", "fb");
+            String urlParams = "";
+            for (Entry<String, String> e : paramMap.entrySet()) {
+                urlParams += e.getKey() + "=" + e.getValue() + "&";
+            }
+            urlParams = urlParams.substring(0, urlParams.length() - 1);
+            String sign = DigestUtils.md5Hex(urlParams + key);
+            
+            String url = "https://tt-s" + sid.substring(3) + ".gamebox.com/pay.php?" + urlParams + "&sign=" + sign;
+            String responseStr = WebUtils.sendGet(url, null);
+            
+            System.out.println(responseStr);
+            System.out.println(expectResult);
+            if (expectResult.equals(responseStr.trim())) {
+                
+                return 1;
+            } else {
+                return 0;
+            }
+            
         }
 
         if (gameId == 19) {
@@ -516,9 +435,9 @@ public class ServerServiceImpl  implements ServerService {
         try {
             roleName = URLEncoder.encode(roleName, "UTF-8");
         }
-        catch (UnsupportedEncodingException e) {
+        catch (Exception e) {
             e.printStackTrace();
-            return 0;
+            roleName = "NULL";
         }
         if (gameId != 18) {
             secret = secret.replace("(key)", key).replace("(sid)", sid).replace("(showid)", showId)
@@ -561,7 +480,7 @@ public class ServerServiceImpl  implements ServerService {
         System.out.println(expectResult);
         if (expectResult.equals(responseStr.trim())) {
             if (gameId == 4) {
-                oqRewards(serverId, userId, uid, roleName, gameCoin);
+                //oqRewards(serverId, userId, uid, roleName, gameCoin);
             }
             return 1;
         }
@@ -570,217 +489,11 @@ public class ServerServiceImpl  implements ServerService {
         }
     }
 
-    public int updateStatus(Long[] ids, Integer status) {
-
-        return serverDao.updateStatus(ids, status);
-    }
-
-    private void oqRewards(Integer serverId, Integer userId, String uid, String roleName, Integer gameCoin) {
-        try {
-        int leaf = gameCoin;
-
-        String sendtitle = "Event Rewards";
-
-        String body = "Dear Player,Thanks so much for your support. Here are the recharge rewards. Please click to receive them. Have a nice day!Gamebox Team";
-
-        String sDateTime = DateUtils.getCurrentDay("yyyy-MM-dd");
-
-        String timestamp = DateUtils.getCurrentTime().toString();
-        //
-        String secret = DigestUtils.md5Hex(sDateTime + timestamp + "@#dj%sdgamecibboxu#m");
-
-        if (serverId > 300 && serverId < 400) {
-            secret = DigestUtils.md5Hex(sDateTime + timestamp + "@box%sduutcgameome#c");
-        }
-
-        String urlOfRole = "http://oqs" + serverId
-                + ".gamebox.com/hoho_admin/interface/export/interface.php?method=characters&user_id=" + uid + "&date="
-                + sDateTime + "&time=" + timestamp + "&flag=" + secret;
-        // 时区服
-        if (serverId > 200 && serverId < 300) {
-            urlOfRole = "http://edtoqs" + (serverId - 200)
-                    + ".gamebox.com/hoho_admin/interface/export/interface.php?method=characters&user_id=" + uid
-                    + "&date=" + sDateTime + "&time=" + timestamp + "&flag=" + secret;
-        }
-        if (serverId > 300 && serverId < 400) {
-            urlOfRole = "http://utcoqs" + (serverId - 300)
-                    + ".gamebox.com/hoho_admin/interface/export/interface.php?method=characters&user_id=" + uid
-                    + "&date=" + sDateTime + "&time=" + timestamp + "&flag=" + secret;
-        }
-
-        String rescc = WebUtils.sendGet(urlOfRole, null);
-
-        JSONArray jsonArray = JSONArray.fromObject(rescc);
-
-        String guid = "";
-
-        for (int i = 0; i < jsonArray.size(); i++) {
-
-            JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-            String nickname = jsonObject.getString("nickname");
-            if (nickname.equalsIgnoreCase(roleName)) {
-                guid = jsonObject.getString("Guid");
-                System.out.println("=======pay Guid=======" + guid);
-            }
-        }
-
-        if (guid.equals("")) {
-            return;
-        }
-        List<DirectPaymentOrder> list = directPaymentOrderDao.oqRewardsOnCurrentDay(userId);
-        String urlOfTool = "";
-        String wupin = "";
-        if (list.size() < 1) {
-            try {
-
-                wupin = "50700080:1:1,11010004:1:1,11000004:1:1";
-
-                urlOfTool = "http://oqs" + serverId
-                        + ".gamebox.com/hoho_admin/interface/export/interface.php?method=send_classic&date="
-                        + sDateTime + "&time=" + timestamp + "&flag=" + secret + "&userid=" + guid + "&sendtitle="
-                        + URLEncoder.encode(sendtitle, "UTF-8") + "&body=" + URLEncoder.encode(body, "UTF-8")
-                        + "&wupin=" + wupin;
-                if (serverId > 200 && serverId < 300) {
-                    urlOfTool = "http://edtoqs" + (serverId - 200)
-                            + ".gamebox.com/hoho_admin/interface/export/interface.php?method=send_classic&date="
-                            + sDateTime + "&time=" + timestamp + "&flag=" + secret + "&userid=" + guid + "&sendtitle="
-                            + URLEncoder.encode(sendtitle, "UTF-8") + "&body=" + URLEncoder.encode(body, "UTF-8")
-                            + "&wupin=" + wupin;
-                }
-                if (serverId > 300 && serverId < 400) {
-                    urlOfTool = "http://edtoqs" + (serverId - 300)
-                            + ".gamebox.com/hoho_admin/interface/export/interface.php?method=send_classic&date="
-                            + sDateTime + "&time=" + timestamp + "&flag=" + secret + "&userid=" + guid + "&sendtitle="
-                            + URLEncoder.encode(sendtitle, "UTF-8") + "&body=" + URLEncoder.encode(body, "UTF-8")
-                            + "&wupin=" + wupin;
-                }
-                WebUtils.sendGet(urlOfTool, null);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-        System.out.println(leaf);
-
-        if (leaf == 200) {
-            wupin = "21301005:1:1,50200024:1:1";
-        }
-        else if (leaf == 400) {
-            wupin = "10500003:1:1,50700063:3:1,11010004:2:1";
-        }
-        else if (leaf == 600) {
-            wupin = "50700063:3:1,10100053:10:1,10100032:2:1,10100047:1:1,50700080:2:1";
-        }
-        else if (leaf == 1200) {
-            wupin = "50700070:1:1,10100053:18:1,10100032:7:1,10100048:1:1,50700080:4:1";
-        }
-        else if (leaf == 1800 || leaf == 2000) {
-            wupin = "50700001:8:1,50700070:2:1,10100053:27:1,10100049:1:1,50700080:6:1";
-        }
-        else if (leaf == 4000) {
-            wupin = "11000006:1:1,11010007:2:1,10100054:15:1,10100055:10:1,10100049:1:1,50700080:15:1";
-        }
-        else if (leaf == 6000) {
-            wupin = "11000006:2:1,11010007:4:1,10100054:25:1,10600062:2:1,50700003:30:1,50700080:20:1";
-        }
-        else if (leaf == 10000) {
-            wupin = "11000006:4:1,11010007:7:1,10100054:40:1,10600062:5:1,50700003:50:1,50700080:40:1";
-        }
-        else if (leaf == 20000) {
-            wupin = "11000007:3:1,11010009:1:1,10100007:5:1,10100055:99:1,50700080:99:1,10600062:10:1";
-        }
-        else {
-            return;
-        }
-       
-            urlOfTool = "http://oqs" + serverId
-                    + ".gamebox.com/hoho_admin/interface/export/interface.php?method=send_classic&date=" + sDateTime
-                    + "&time=" + timestamp + "&flag=" + secret + "&userid=" + guid + "&sendtitle="
-                    + URLEncoder.encode(sendtitle, "UTF-8") + "&body=" + URLEncoder.encode(body, "UTF-8") + "&wupin="
-                    + wupin;
-            if (serverId > 200 && serverId < 300) {
-                urlOfTool = "http://edtoqs" + serverId
-                        + ".gamebox.com/hoho_admin/interface/export/interface.php?method=send_classic&date="
-                        + sDateTime + "&time=" + timestamp + "&flag=" + secret + "&userid=" + guid + "&sendtitle="
-                        + URLEncoder.encode(sendtitle, "UTF-8") + "&body=" + URLEncoder.encode(body, "UTF-8")
-                        + "&wupin=" + wupin;
-            }
-            if (serverId > 300 && serverId < 400) {
-                urlOfTool = "http://edtoqs" + serverId
-                        + ".gamebox.com/hoho_admin/interface/export/interface.php?method=send_classic&date="
-                        + sDateTime + "&time=" + timestamp + "&flag=" + secret + "&userid=" + guid + "&sendtitle="
-                        + URLEncoder.encode(sendtitle, "UTF-8") + "&body=" + URLEncoder.encode(body, "UTF-8")
-                        + "&wupin=" + wupin;
-            }
-            WebUtils.sendGet(urlOfTool, null);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see com.gamebox.service.ServerService#getSeversByGameId(java.lang.Integer)
-     */
     @Override
-    public List<Server> getSeversByGameId(Integer gameId) {
-
-        List<Webgame> games = null;
-        List<Server> servers = null;
-       
-
-//        List<Filter> filters = new ArrayList<Filter>(1);
-//        Filter filter = new Filter();
-//        filter.setOperator(Operator.eq);
-//        filter.setProperty("gameId");
-//        filter.setValue(gameId);
-//        filters.add(filter);
-//
-//        List<Order> orders = new ArrayList<Order>(1);
-//        Order gameOrder = new Order();
-//        gameOrder.setDirection(Direction.asc);
-//        gameOrder.setProperty("gameId");
-//
-//        Order serverOrder = new Order();
-//        serverOrder.setDirection(Direction.asc);
-//        serverOrder.setProperty("serverId");
-//
-//        orders.add(gameOrder);
-//        orders.add(serverOrder);
-//        if (null == gameId) {
-//            games = gameService.findAll();
-//            servers = this.findList(null, null, orders);
-//            fixGamename2Server(games, servers);
-//            return servers;
-//        }
-//        servers = this.findList(null, filters, orders);
-//        Webgame game = gameService.findByGameId(gameId);
-//        for (Server server : servers) {
-//            server.setGameName(game.getName());
-//        }
-        return servers;
-    }
-    
     public Integer getNewestServerId(Integer gameId){
         return serverDao.getNewestServerId(gameId);
     }
 
-    /**
-     * @param games
-     * @param servers
-     */
-    private void fixGamename2Server(List<Webgame> games, List<Server> servers) {
 
-        for (Server server : servers) {
-            for (Webgame game : games) {
-                if (server.getGameId().equals(game.getGameId())) {
-                    server.setGameName(game.getName());
-                }
-            }
-        }
-    }
 
 }

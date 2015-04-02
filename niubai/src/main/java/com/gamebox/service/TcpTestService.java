@@ -4,7 +4,6 @@
  */
 package com.gamebox.service;
 
-import java.util.Date;
 import java.util.List;
 
 import com.gamebox.model.TcpTest;
@@ -14,6 +13,8 @@ import com.gamebox.model.TcpTest;
  * 
  */
 public interface TcpTestService {
+    
+    void test();
 
     List<TcpTest> getAll();
 

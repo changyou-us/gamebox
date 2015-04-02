@@ -1,22 +1,10 @@
 package com.gamebox.model;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.gamebox.util.FreemarkerUtils;
-
-import freemarker.template.TemplateException;
 
 /**
  * GameboxServer entity. @author MyEclipse Persistence Tools
  */
-@JsonAutoDetect(getterVisibility = Visibility.ANY)
-@JsonIgnoreProperties(value = { "id", "createDate", "modifyDate", "path", "description" })
 public class Server extends BaseEntity implements java.io.Serializable {
 
     /**
@@ -24,72 +12,8 @@ public class Server extends BaseEntity implements java.io.Serializable {
      */
     private static final long serialVersionUID = 1115035139702033159L;
 
-    // Fields
-
-    public enum DisplayType {
-        /** 不显示 **/
-        hidden,
-        /** 显示 **/
-        display;
-    }
-
-    public enum StatusType {
-        /** 空闲 **/
-        free,
-        /** 良好 **/
-        fine,
-        /** 繁忙 **/
-        busy,
-        /** 维护 **/
-        maintain
-    }
-
-    public enum IsNewType {
-        /** 旧服 **/
-        old,
-        /** 新服 **/
-        fresh
-    }
-
-    public enum RecommendedType {
-        /** 不推荐 **/
-        notRecommended,
-        /** 推荐 **/
-        recommended
-    }
-
-    public enum TimezoneType {
-        /** US WEST **/
-        west,
-        /** US EAST **/
-        east,
-        /** EUROPE **/
-        europe,
-        /** OCEANIA **/
-        oceania,
-        /** ASIA **/
-        asia,
-        /** INTERNATIONAL **/
-        international
-    }
-
-    private enum Partner {
-
-        kongregate,
-
-        armorgames,
-
-        yahoo,
-
-        Y8
-    }
-
-    public enum TransIdUsedStatus {
-        NOT_USED, USED
-    }
-
     /** 静态路径 */
-    private static String staticPath;
+    //private static String staticPath;
 
     /**
      * 服务id，服务器唯一标识
@@ -586,25 +510,5 @@ public class Server extends BaseEntity implements java.io.Serializable {
         this.rankKey = rankKey;
     }
 
-    /**
-     * 获取访问路径
-     * 
-     * @return 访问路径
-     */
-    public String getPath() {
-
-        Map<String, Object> model = new HashMap<String, Object>();
-        model.put("gid", getGameId());
-        try {
-            return FreemarkerUtils.process(staticPath, model);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        catch (TemplateException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
 }
