@@ -127,7 +127,7 @@ public class RTUController {
                             directPaymentOrderService.update(directPaymentOrder);
                             
                             // 黑名单
-                        } else if ("chargeback".equals(type)) {
+                        } else if ("chargeback".equals(type) || "decline".equals(type)) {
                             
                             if (directPaymentOrder == null) {
                                 return;
